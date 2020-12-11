@@ -19,7 +19,7 @@
 <!-- 
 	<bean id="MysqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="MysqlDataSource" />
-		<property name="typeAliasesPackage" value="com.it_cous.vo" />
+		<property name="typeAliasesPackage" value="com.vo" />
 		<property name="configLocation" value="classpath:spring/appContext/mybatis-config.xml" />
 		<property name="mapperLocations" value="classpath*:spring/appQuery/Mysql*.xml" />
 		<property name="typeHandlersPackage" value="com.it_cous.mybatis.typeHandler" />
@@ -31,7 +31,7 @@
 	</bean>	
 	
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.it_cous.mapper2" />
+		<property name="basePackage" value="com.mapper2" />
 		<property name="sqlSessionTemplateBeanName" value="mysqlSessionTemplate" />
 	</bean>
  -->

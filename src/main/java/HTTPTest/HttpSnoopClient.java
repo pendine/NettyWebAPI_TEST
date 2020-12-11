@@ -45,6 +45,8 @@ public final class HttpSnoopClient {
 	static final String JVMVER = System.getProperty("java.vm.version");
 	static final String VERSION = System.getProperty("java.version");
 	
+	static ChannelFuture cf;
+	
 	
     static final String URL = System.getProperty("url", "https://google.com:443/");
     
@@ -103,7 +105,7 @@ public final class HttpSnoopClient {
              .channel(NioSocketChannel.class)
              .handler(new HttpSnoopClientInitializer(sslCtx));
 
-            ChannelFuture cf = b.connect(host, port);
+            cf = b.connect(host, port);
             // Make the connection attempt.
             Channel ch = cf.sync().channel();
 //            Channel ch = b.connect(host, port).sync().channel();
@@ -113,7 +115,7 @@ public final class HttpSnoopClient {
                     HttpVersion.HTTP_1_1
                     , HttpMethod.GET
                     , uri.getRawPath()
-                    , Unpooled.EMPTY_BUFFER
+//                    , Unpooled.EMPTY_BUFFER
                     );
             
             //야... 이걸 주석처리 하니까 웹페이지 모든 소스를 불러와버린다... 개꿀!

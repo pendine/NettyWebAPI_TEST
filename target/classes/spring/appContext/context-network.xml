@@ -162,7 +162,7 @@
 	</bean>	
 	
 	<!-- PIS 서버 시작. -->
-	<bean id="launcher" class="com.it_cous.launcher.ExecutorServiceLauncher">
+	<bean id="launcher" class="com.launcher.ExecutorServiceLauncher">
 		<property name="executorService" ref="executorService" />
 		<property name="launchTasks">
 			<list>
@@ -191,21 +191,23 @@
 	</bean>
 	
 	<!-- PIS Client 통신 [START] -->
-	<bean id="Web_ClientInitializer" class="com.it_cous.netty.initializer.Client_Initializer" />
+	<bean id="NettyWebClientChannelInit" class="com.netty.initializer.NettyWebClientChannelInit">
+		<constructor-arg type="SslContext" index="0" value="io.netty.handler.ssl.SslContext" />
+	</bean>
 	
-	<bean id="ClientBootstrapFactory" class="com.it_cous.network.netty.bootstrap.ClientBootstrapFactory">
+	<bean id="ClientBootstrapFactory" class="com.network.netty.bootstrap.ClientBootstrapFactory">
 		<constructor-arg index="0" ref="clientWorkerGroup" />
     	<constructor-arg index="1" ref="clientChannelOptions" />
-    	<constructor-arg index="2" ref="Web_ClientInitializer" />
+    	<constructor-arg index="2" ref="NettyWebClientChannelInit" />
 	</bean>
 	<!-- PIS Client 통신 [END] -->
 
 
 
 	<!-- OP 통신 [START] -->
-	<bean id="OP_Initializer" class="com.it_cous.netty.initializer.OP_Initializer" />
+	<bean id="OP_Initializer" class="com.netty.initializer.OP_Initializer" />
 
-	<bean id="OPBootstrapFactory" class="com.it_cous.network.netty.bootstrap.NettyServerBootstrapFactory" >
+	<bean id="OPBootstrapFactory" class="com.network.netty.bootstrap.NettyServerBootstrapFactory" >
 		<constructor-arg index="0" ref="serverAcceptGroup" />
 		<constructor-arg index="1" ref="serverWorkerGroup" />
     	<constructor-arg index="2" ref="tcpChannelOptions" />
@@ -214,7 +216,7 @@
 	
 	<bean id="OPBootstrap" factory-bean="OPBootstrapFactory" factory-method="createBootstrap" />
 	
-	<bean id="OPServer" class="com.it_cous.network.netty.NettyTCPServer">
+	<bean id="OPServer" class="com.network.netty.NettyTCPServer">
 		<constructor-arg type="int" index="0" value="${op.server.localport}" />
 		<constructor-arg index="1" ref="OPBootstrap" />
 		<property name="readEndian"		value= "#{	'${read.endian}'	== 'little' ? T(java.nio.ByteOrder).LITTLE_ENDIAN  : T(java.nio.ByteOrder).BIG_ENDIAN }" />

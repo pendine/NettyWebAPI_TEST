@@ -21,7 +21,7 @@
 <!-- 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="typeAliasesPackage" value="com.it_cous.vo" />
+		<property name="typeAliasesPackage" value="com.vo" />
 		<property name="configLocation" value="classpath:spring/appContext/mybatis-config.xml" />
 		<property name="mapperLocations" value="classpath*:spring/appQuery/Tibero*.xml" />
 		<property name="typeHandlersPackage" value="com.it_cous.mybatis.typeHandler" />
@@ -33,7 +33,7 @@
 	</bean>	
 	
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.it_cous.mapper" />
+		<property name="basePackage" value="com.mapper" />
 		<property name="sqlSessionTemplateBeanName" value="sqlSessionTemplate" />
 	</bean>
  -->

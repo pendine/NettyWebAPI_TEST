@@ -191,12 +191,14 @@
 	</bean>
 	
 	<!-- PIS Client 통신 [START] -->
-	<bean id="Web_ClientInitializer" class="com.netty.initializer.Client_Initializer" />
+	<bean id="NettyWebClientChannelInit" class="com.netty.initializer.NettyWebClientChannelInit">
+		<constructor-arg type="SslContext" index="0" value="io.netty.handler.ssl.SslContext" />
+	</bean>
 	
 	<bean id="ClientBootstrapFactory" class="com.network.netty.bootstrap.ClientBootstrapFactory">
 		<constructor-arg index="0" ref="clientWorkerGroup" />
     	<constructor-arg index="1" ref="clientChannelOptions" />
-    	<constructor-arg index="2" ref="Web_ClientInitializer" />
+    	<constructor-arg index="2" ref="NettyWebClientChannelInit" />
 	</bean>
 	<!-- PIS Client 통신 [END] -->
 

@@ -2,6 +2,7 @@ package com.network.netty;
 
 
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.ByteOrder;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +33,9 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.multipart.HttpPostRequestEncoder;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
 	
 public class NettyWebClient {
@@ -89,47 +93,62 @@ public class NettyWebClient {
 		this(host, port, nettyBootstrapFactory, 1);
 	}
 	
-    public void connect() 
-	{
-    	group = new NioEventLoopGroup();
-        try 
-        {
-//            b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true).handler(new Client_Initializer() );
-            System.out.println(" 커넥션 확인전sout ");
-            System.out.println("HOST : " + host + " PORT : "+port);
-            System.out.println(" 커넥션 확인용 sout ");
-//	            cf.channel().closeFuture().sync();
-        }
-        catch (Exception e) 
-        {
-            e.printStackTrace();
-        }
-    }
 	    
     public void createRequest(String host, int port, String url) throws Exception 
     {
     	HttpRequest request = null;
-    	HttpPostRequestEncoder postRequestEncoder = null;
         
-    	request = new DefaultFullHttpRequest( HttpVersion.HTTP_1_1, HttpMethod.GET, url , Unpooled.EMPTY_BUFFER );
-        request.headers().set( HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED );
-        request.headers().set( HttpHeaderNames.HOST, host+":"+port );
-        request.headers().set( HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE );
+    	String input = url ;
+    	System.out.println("input url : " + input);
+    	URI uri = new URI(input);
+    	
+    	request = new DefaultFullHttpRequest( 
+    			HttpVersion.HTTP_1_1
+    			, HttpMethod.GET
+    			, uri.toString()
+//    			, Unpooled.EMPTY_BUFFER 
+    			);
+//        request.headers().set( HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED );
+//        request.headers().set( HttpHeaderNames.HOST, host+":"+port );
+//        request.headers().set( HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE );
 //      request.headers().set( HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP );
         
-        group = new NioEventLoopGroup();
         
 //        clientBootstrap.group(group).channel(NioSocketChannel.class)//.option(ChannelOption.TCP_NODELAY, true)
 //        .handler(new NettyWebClientChannelInit(group) );
         
         System.out.println("requset host : " + host );
         System.out.println("requset port : " + port );
-        System.out.println("requset url : "	 + url );
         System.out.println("set url : " + request.uri());
+        
+        String scheme = uri.getScheme() == null? "http" : uri.getScheme();
+        String address = uri.getHost() == null? "127.0.0.1" : uri.getHost();
+        
+        System.out.println("scheme : " + scheme );
+        System.out.println("address : " + address );
+        System.out.println("port : " + uri.getPort() );
+        System.out.println("getPath : " + uri.getPath() );
+        System.out.println("getQuery : " + uri.getQuery() );
+
+        System.out.println("toASCIIString : " + uri.toASCIIString());
+        System.out.println("toString : " + uri.toString());
+        
+        final boolean ssl = "https".equalsIgnoreCase(scheme);
+        final SslContext sslCtx;
+        if (ssl) {
+            sslCtx = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+        } else {
+            sslCtx = null;
+        }
+
+        group = new NioEventLoopGroup();
+        
+        
         
 //        Channel ch = b.connect(host, port).sync().channel();
         
         this.cf = b.connect(host, port);
+        Channel ch = this.cf.sync().channel();
             
         System.out.println("channelFuture is Done : "		+ cf.isDone());
         System.out.println("channelFuture is Success : "	+ cf.isSuccess());
@@ -142,8 +161,8 @@ public class NettyWebClient {
         
 //        request = postRequestEncoder.finalizeRequest();
 //        postRequestEncoder.close();
-        cf.channel().writeAndFlush(request);
-            
+        ch.writeAndFlush(request);
+
     }
     
     public void close() 
