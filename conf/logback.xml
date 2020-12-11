@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<configuration scan="true" scanPeriod="60 seconds" >
+<!-- 로거 정책 다시 정해 -->
+
+ 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+        	<charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %-40.40logger{39}[%M : %L] | %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="MAIN_LOG" class="ch.qos.logback.classic.sift.SiftingAppender">
+	    <discriminator>
+			<key>PIS</key>
+	      	<defaultValue>Server_Main_Log</defaultValue>
+	    </discriminator>
+    	<sift>
+    	<!-- rolling file appender = 파일 압축 수행 (비동기수행으로 어플리케이션에 영향없음.) -->
+      		<appender name="MAIN_LOG-SERVER_ID-${PIS}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${user.dir}/log/PIS_ID_${PIS}/PIS_${PIS}_%d{yyyy-MM-dd}.%i.log</file>              		
+        		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+       				<fileNamePattern>${user.dir}/log/PIS_ID_${PIS}/PIS_${PIS}_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+		  			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+               			<maxFileSize> 10mb </maxFileSize>
+           			</timeBasedFileNamingAndTriggeringPolicy>
+          			<maxHistory> 7 </maxHistory>
+        		</rollingPolicy>
+        		<encoder>
+        			<charset>utf8</charset>
+        			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %-40.40logger{39}[%M : %L] | %msg %n</pattern>
+        		</encoder>
+      		</appender>
+    	</sift>
+  	</appender>
+    
+    <logger name="org.springframework.context.support.ClassPathXmlApplicationContext">
+        <level value="INFO" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="MAIN_LOG" />
+    </logger>
+    
+    <logger name="org.springframework.beans.factory.xml.XmlBeanDefinitionReader ">
+        <level value="INFO" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="MAIN_LOG" />
+    </logger>
+    
+    <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner">
+        <level value="INFO" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="MAIN_LOG" />
+    </logger>
+    
+    <logger name="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <level value="INFO" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="MAIN_LOG" />
+    </logger>
+    
+    <!-- oracle config Logger -->
+    <logger name="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <level value="DEBUG" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="MAIN_LOG" />
+    </logger>
+
+    <logger name="io.netty">
+        <level value="INFO" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="MAIN_LOG" />
+    </logger>  
+
+    <logger name="com" level="INFO" >
+        <appender-ref  ref="CONSOLE" />
+        <appender-ref  ref="MAIN_LOG" />
+    </logger>
+    
+    
+    <appender name="JOB" class="ch.qos.logback.classic.sift.SiftingAppender">
+	    <discriminator>
+			<key>PIS</key>
+	      	<defaultValue>PISJOB</defaultValue>
+	    </discriminator>
+    	<sift>
+      		<appender name="JOB_LOG-${PIS}-job" class="ch.qos.logback.core.rolling.RollingFileAppender">
+ 				<file>${user.dir}/log/PIS_ID_${PIS}/JOB_${PIS}_%d{yyyy-MM-dd}.%i.log</file>                 		
+        		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+       				<fileNamePattern>${user.dir}/log/PIS_ID_${PIS}/JOB_${PIS}_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+		  			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+               			<maxFileSize> 10mb </maxFileSize>
+           			</timeBasedFileNamingAndTriggeringPolicy>
+          			<maxHistory> 7 </maxHistory>
+        		</rollingPolicy>
+        		<encoder>
+        			<charset>utf8</charset>
+        			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %-40.40logger{39}[%M : %L] | %msg %n</pattern>
+        		</encoder>
+      		</appender>
+    	</sift>
+  	</appender>
+  	
+  	
+  	  <appender name="Operation" class="ch.qos.logback.classic.sift.SiftingAppender">
+	    <discriminator>
+			<key>OP</key>
+	    </discriminator>
+    	<sift>
+      		<appender name="${OP}-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+ 				<file>${user.dir}/log/${OP}-log/${OP}_%d{yyyy-MM-dd}.%i.log</file>                 		
+        		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+       				<fileNamePattern>${user.dir}/log/${OP}/${OP}_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+		  			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+               			<maxFileSize> 10mb </maxFileSize>
+           			</timeBasedFileNamingAndTriggeringPolicy>
+          			<maxHistory> 7 </maxHistory>
+        		</rollingPolicy>
+        		<encoder>
+        			<charset>utf8</charset>
+        			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %-40.40logger{39}[%M : %L] | %msg %n</pattern>
+        		</encoder>
+      		</appender>
+    	</sift>
+  	</appender>
+  	
+  	<logger name = "com.it_cous">
+  		<level value="info" />
+  		<appender-ref ref="Operation" />
+  	</logger> 
+    
+    
+    <appender name="Disconnected" class="ch.qos.logback.classic.sift.SiftingAppender">
+	    <discriminator>
+			<key>PIS</key>
+	      	<defaultValue>Server_Main_Log</defaultValue>
+	    </discriminator>
+    	<sift>
+    	<!-- rolling file appender = 파일 압축 수행 (비동기수행으로 어플리케이션에 영향없음.) -->
+      		<appender name="Disconnected_ID-${PIS}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${user.dir}/log/PIS_ID_${PIS}/Disconnected_PIS_${PIS}_%d{yyyy-MM-dd}.%i.log</file>              		
+        		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+       				<fileNamePattern>${user.dir}/log/PIS_ID_${PIS}/Disconnected_PIS_${PIS}_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+		  			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+               			<maxFileSize> 10mb </maxFileSize>
+           			</timeBasedFileNamingAndTriggeringPolicy>
+          			<maxHistory> 7 </maxHistory>
+        		</rollingPolicy>
+        		<encoder>
+        			<charset>utf8</charset>
+        			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %-40.40logger{39}[%M : %L] | %msg %n</pattern>
+        		</encoder>
+      		</appender>
+    	</sift>
+  	</appender>
+  	
+	<logger name = "com.it_cous.network">
+  		<level value="info" />
+  		<appender-ref ref="Disconnected" />
+  	</logger>
+  	
+  	
+    
+</configuration>

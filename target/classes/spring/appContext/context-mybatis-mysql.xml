@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+    <!-- transaction manager -->
+    <bean id="mysqlTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="MysqlDataSource" />
+	</bean>
+		
+	<tx:annotation-driven transaction-manager="mysqlTransactionManager" />
+
+	<!-- ==== mybatis sessionFactory ==== -->
+	<bean id="MysqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- DataSource Bean을 참조한다. -->
+		<property name="dataSource" ref="MysqlDataSource" />
+		<property name="typeAliasesPackage" value="com.it_cous.vo" />
+		<property name="configLocation" value="classpath:spring/appContext/mybatis-config.xml" />
+		<!-- Mysql DB만 업데이트할 용도 -->
+		<property name="mapperLocations" value="classpath*:spring/appQuery/Mysql*.xml" />
+		<property name="typeHandlersPackage" value="com.it_cous.mybatis.typeHandler" />
+	</bean>
+
+	<bean id="mysqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+		<constructor-arg index="0" ref="MysqlSessionFactory" />
+		<constructor-arg index="1" value="REUSE" />
+	</bean>	
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.it_cous.mapper2" />
+		<property name="sqlSessionTemplateBeanName" value="mysqlSessionTemplate" />
+	</bean>
+	
+</beans>

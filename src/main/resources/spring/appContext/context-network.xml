@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+
+
+<!-- conf 파일내의 모든 프로퍼티파일들을 로드함 -->
+	<bean id="contextProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>file:${user.dir}/conf/*.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+<!-- 	  <bean class="org.jasypt.spring31.properties.EncryptablePreferencesPlaceholderConfigurer"> 
+		 <constructor-arg ref="stringAESEncryptor" /> -->
+ 	<bean class= "org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+	    <property name="properties" ref="contextProperties" />	 
+	</bean> 
+
+<!-- ************************************************************************************************* -->
+<!-- Socket channel options for Client Bootstrap                                                   -->
+<!-- ************************************************************************************************* -->
+    <util:map id="clientChannelOptions" map-class="java.util.HashMap">
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_RCVBUF"/></key>
+            <value type="java.lang.Integer">${netty.rcvBufSize}</value>                        
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_SNDBUF"/></key>
+            <value type="java.lang.Integer">${netty.sndBufSize}</value>
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS"/></key>
+            <value type="java.lang.Integer">${netty.connectTimeout}</value>
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.TCP_NODELAY"/></key>
+            <value type="java.lang.Boolean">${netty.tcpNodelay}</value>
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_KEEPALIVE"/></key>
+            <value type="java.lang.Boolean">${netty.keepAlive}</value>
+        </entry>
+    </util:map>
+
+
+<!-- ************************************************************************************************* -->
+<!-- Socket channel options for OP Server Bootstrap                                                   -->
+<!-- ************************************************************************************************* -->
+
+    <util:map id="OPChannelOptions" map-class="java.util.HashMap">
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_RCVBUF"/></key>
+            <value type="java.lang.Integer">${netty.rcvBufSize}</value>                        
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_SNDBUF"/></key>
+            <value type="java.lang.Integer">${netty.sndBufSize}</value>
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS"/></key>
+            <value type="java.lang.Integer">${netty.connectTimeout}</value>
+        </entry>
+    </util:map>
+
+
+<!-- ************************************************************************************************* -->
+<!-- Socket channel options for TCP Server Bootstrap                                                   -->
+<!-- ************************************************************************************************* -->
+
+<!--  server bootstrap에서는 일부 채널 옵션을 사용할 수 없음. = 클라이언트에서 사용할 수 있는 채널 옵션보다 적음.
+-->
+    <util:map id="tcpChannelOptions" map-class="java.util.HashMap">
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_RCVBUF"/></key>
+            <value type="java.lang.Integer">${netty.rcvBufSize}</value>                        
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_SNDBUF"/></key>
+            <value type="java.lang.Integer">${netty.sndBufSize}</value>
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS"/></key>
+            <value type="java.lang.Integer">${netty.connectTimeout}</value>
+        </entry>
+        
+        <!-- channeloption중 몇몇은 bootestrap을 위한 옵션이 아니라 연결된 채널에 대한 옵션임.  -->
+        <!-- 출처 : https://groups.google.com/d/topic/netty-ko/BMukZdOVzcI -->
+        <!--   
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.TCP_NODELAY"/></key>
+            <value type="java.lang.Boolean">${netty.tcpNodelay}</value>
+        </entry>
+        
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_KEEPALIVE"/></key>
+            <value type="java.lang.Boolean">${netty.keepAlive}</value>
+        </entry>
+         -->
+         
+    </util:map>
+
+<!-- ************************************************************************************************* -->
+<!-- Socket channel options for TCP  Bootstrap                                                   -->
+<!-- ************************************************************************************************* -->
+
+<!--  server bootstrap에서는 일부 채널 옵션을 사용할 수 없음. = 클라이언트에서 사용할 수 있는 채널 옵션보다 적음.
+-->
+    <util:map id="tcpChannelClientOptions" map-class="java.util.HashMap">
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_RCVBUF"/></key>
+            <value type="java.lang.Integer">${netty.rcvBufSize}</value>                        
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_SNDBUF"/></key>
+            <value type="java.lang.Integer">${netty.sndBufSize}</value>
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS"/></key>
+            <value type="java.lang.Integer">${netty.connectTimeout}</value>
+        </entry>
+        
+        <!-- channeloption중 몇몇은 bootestrap을 위한 옵션이 아니라 연결된 채널에 대한 옵션임.  -->
+        <!-- 출처 : https://groups.google.com/d/topic/netty-ko/BMukZdOVzcI -->
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.TCP_NODELAY"/></key>
+            <value type="java.lang.Boolean">${netty.tcpNodelay}</value>
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_KEEPALIVE"/></key>
+            <value type="java.lang.Boolean">${netty.keepAlive}</value>
+        </entry>
+	</util:map>
+
+
+<!-- ************************************************************************************************* -->
+<!-- Socket channel options for UDP Server Bootstrap                                                   -->
+<!-- ************************************************************************************************* -->
+    <util:map id="udpChannelOptions" map-class="java.util.HashMap">
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_RCVBUF"/></key>
+            <value type="java.lang.Integer">${netty.rcvBufSize}</value>                        
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_SNDBUF"/></key>
+            <value type="java.lang.Integer">${netty.sndBufSize}</value>
+        </entry>
+        <entry>
+            <key><util:constant static-field="io.netty.channel.ChannelOption.SO_BROADCAST"/></key>
+            <value type="java.lang.Boolean">${netty.broadCast}</value>            
+        </entry>
+    </util:map>
+
+	<bean id="executorService" class="java.util.concurrent.Executors" factory-method="newFixedThreadPool" destroy-method="shutdown">
+		<constructor-arg value="${launcher.threads}" />
+	</bean>	
+	
+	<!-- PIS 서버 시작. -->
+	<bean id="launcher" class="com.it_cous.launcher.ExecutorServiceLauncher">
+		<property name="executorService" ref="executorService" />
+		<property name="launchTasks">
+			<list>
+				<!-- 
+				<ref bean="OPServer" />
+				 -->
+			</list>
+		</property>
+	</bean>	
+
+	
+	<!-- 부트스트랩에서 패킷을 수신,송신 담당 -->
+	<!-- 서버 이벤트루프그룹 생성 -->
+	<bean id="serverAcceptGroup" class="io.netty.channel.nio.NioEventLoopGroup" destroy-method="shutdownGracefully">
+		<constructor-arg type="int" index="0" value="${server.acceptthread.count}" />
+	</bean>
+
+	<bean id="serverWorkerGroup" class="io.netty.channel.nio.NioEventLoopGroup" destroy-method="shutdownGracefully">
+		<constructor-arg type="int" index="0" value="${server.workerthread.count}" />
+	</bean>	
+	
+	
+	<!-- 클라이언트 이벤트루프그룹 생성 -->
+	<bean id="clientWorkerGroup" class="io.netty.channel.nio.NioEventLoopGroup" destroy-method="shutdownGracefully">
+		<constructor-arg type="int" index="0" value="${client.workerthread.count}" />
+	</bean>
+	
+	<!-- PIS Client 통신 [START] -->
+	<bean id="Web_ClientInitializer" class="com.it_cous.netty.initializer.Client_Initializer" />
+	
+	<bean id="ClientBootstrapFactory" class="com.it_cous.network.netty.bootstrap.ClientBootstrapFactory">
+		<constructor-arg index="0" ref="clientWorkerGroup" />
+    	<constructor-arg index="1" ref="clientChannelOptions" />
+    	<constructor-arg index="2" ref="Web_ClientInitializer" />
+	</bean>
+	<!-- PIS Client 통신 [END] -->
+
+
+
+	<!-- OP 통신 [START] -->
+	<bean id="OP_Initializer" class="com.it_cous.netty.initializer.OP_Initializer" />
+
+	<bean id="OPBootstrapFactory" class="com.it_cous.network.netty.bootstrap.NettyServerBootstrapFactory" >
+		<constructor-arg index="0" ref="serverAcceptGroup" />
+		<constructor-arg index="1" ref="serverWorkerGroup" />
+    	<constructor-arg index="2" ref="tcpChannelOptions" />
+    	<constructor-arg index="3" ref="OP_Initializer" />
+	</bean>
+	
+	<bean id="OPBootstrap" factory-bean="OPBootstrapFactory" factory-method="createBootstrap" />
+	
+	<bean id="OPServer" class="com.it_cous.network.netty.NettyTCPServer">
+		<constructor-arg type="int" index="0" value="${op.server.localport}" />
+		<constructor-arg index="1" ref="OPBootstrap" />
+		<property name="readEndian"		value= "#{	'${read.endian}'	== 'little' ? T(java.nio.ByteOrder).LITTLE_ENDIAN  : T(java.nio.ByteOrder).BIG_ENDIAN }" />
+		<property name="writeEndian"	value= "#{	'${write.endian}'	== 'little' ? T(java.nio.ByteOrder).LITTLE_ENDIAN  : T(java.nio.ByteOrder).BIG_ENDIAN }" />
+	</bean>
+	
+	<!-- OP 통신 [END] -->
+	
+		 
+</beans>

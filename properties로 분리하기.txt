@@ -1,0 +1,44 @@
+package tstMyBatis;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Properties;
+public class EntryMain {
+    public static void main(String[] args) {
+        String resource = "config/DB.properties";
+        Properties properties = new Properties();
+        
+        try {
+            Reader reader = Resources.getResourceAsReader(resource);
+            properties.load(reader);
+            System.out.println(properties.getProperty("driver"));
+            System.out.println(properties.getProperty("username"));
+            System.out.println(properties.getProperty("password"));
+            System.out.println(properties.getProperty("url"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+위의 예처럼 모든 프로퍼티를 값으로 불러오기위해서는 try를 사용하여 예외사항을 처리해야하는 상황이 발생함.
+throw를 사용한 예외 처리가 가능하지만...
+
+1바이트로 1헥사코드 정의 가능.
+1byte = 8bit.
+
+4bit 단위 헥사문자열 1개로 표현가능.
+
+byte = 1byte 2문자
+char = 2byte 4문자
+int = 4byte  8문자
+double  = 8byte  16문자
+
+
+https://groups.google.com/g/netty-ko/c/cFSJ6pheY5w
+
+채널 옵션에 따른 옵션값 설정.
+
+상황에 따라 운영체제와 무관하게 연결이 끊겨도 알 수 없는 경우가 항상 있으므로 IdleStateHandler 를 이용하거나 주기적인 hearetbeat 메시지 교환을 통해 커넥션 상태를 확인하는 것이 좋습니다.
+
+
