@@ -78,7 +78,6 @@ public class PISManager implements InitializingBean{
 		NettyWebClient nc = new NettyWebClient(webTmp.endPoint, 80, clientBootstrapFactory);
 
 //		nc.connect(webTmp.endPoint, 80);
-		
 //		nc.connect();
 		
 		System.out.println(" netty web client connect 이후 출력문");

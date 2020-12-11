@@ -13,6 +13,8 @@
 						http://www.springframework.org/schema/beans
 						http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
 	
+	<!-- 
+	
 	<bean id="MysqlDataSource" class = "org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name = "driverClassName" value="${database.mysql.driver}" > </property>
 		<property name = "url" value = "${database.mysql.url}"> </property>
@@ -20,4 +22,5 @@
 		<property name = "password" value = "${database.mysql.password}" > </property>
 	</bean>
 	
+	 -->
 </beans>

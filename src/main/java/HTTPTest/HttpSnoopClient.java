@@ -18,6 +18,7 @@ package HTTPTest;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -46,16 +47,27 @@ public final class HttpSnoopClient {
 	
 	
     static final String URL = System.getProperty("url", "https://google.com:443/");
-
+    
+    static public String weather = System.getProperty("url", "http://apis.data.go.kr:80/1360000/VilageFcstInfoService");
+    
+    String DeafualtUrl = "/1360000/VilageFcstInfoService" ;
+    String APIKey = "fW24b%2FUEGRWODAIUo6Nx0owzv7jQSggx5iSzj0JeQY4z1UHlo4spwka5vM4XeuRMLpKwg6a%2B%2F%2Bu65jtdoFl67g%3D%3D";
+    
+    
     public static void main(String[] args) throws Exception {
-        URI uri = new URI(URL);
+//        URI uri = new URI(URL);
+    	
+    	URI uri = new URI(weather);
         System.out.println("Java VM.Ver : " + JVMVER );
         System.out.println("Java VERSION : " + VERSION );
         System.out.println("Scheme : "+uri.getScheme());
         System.out.println("Host : "+uri.getHost());
         System.out.println("Port : "+uri.getPort());
+        
+        
         String scheme = uri.getScheme() == null? "http" : uri.getScheme();
         String host = uri.getHost() == null? "127.0.0.1" : uri.getHost();
+                
         int port = uri.getPort();
         if (port == -1) 
         {
@@ -91,8 +103,10 @@ public final class HttpSnoopClient {
              .channel(NioSocketChannel.class)
              .handler(new HttpSnoopClientInitializer(sslCtx));
 
+            ChannelFuture cf = b.connect(host, port);
             // Make the connection attempt.
-            Channel ch = b.connect(host, port).sync().channel();
+            Channel ch = cf.sync().channel();
+//            Channel ch = b.connect(host, port).sync().channel();
 
             // Prepare the HTTP request.
             HttpRequest request = new DefaultFullHttpRequest(
@@ -121,10 +135,20 @@ public final class HttpSnoopClient {
 //                            new DefaultCookie("another-cookie", "bar")));
 
             // Send the HTTP request.
+            
+            System.out.println("channelFuture is Done : "		+ cf.isDone());
+            System.out.println("channelFuture is Success : "	+ cf.isSuccess());
+            System.out.println("channelFuture is Cancelled : "	+ cf.isCancelled());
+            System.out.println("channelFuture is Void : "		+ cf.isVoid());
+            
             System.out.println("클라이언트 생성 시 채널로 데이터 보낼 예정이다.");
             ch.writeAndFlush(request);
             System.out.println("클라이언트 생성 시 채널로 데이터 보내버렸다.");
             
+            System.out.println("channelFuture is Done : "		+ cf.isDone());
+            System.out.println("channelFuture is Success : "	+ cf.isSuccess());
+            System.out.println("channelFuture is Cancelled : "	+ cf.isCancelled());
+            System.out.println("channelFuture is Void : "		+ cf.isVoid());
             // Wait for the server to close the connection.
             ch.closeFuture().sync();
             System.out.println("채널 닫음.");
