@@ -24,38 +24,42 @@ public class NettyWebClientChannelInit extends ChannelInitializer<SocketChannel>
     
     private EventLoopGroup group;
     
-     public NettyWebClientChannelInit(EventLoopGroup group) {
-         this.group = group;
-    }
+//	public NettyWebClientChannelInit(EventLoopGroup group) {
+//    	this.group = group;
+//	}
      
-     public NettyWebClientChannelInit(SslContext sslCtx) {
-         this.sslCtx = sslCtx;
-     }
+    public NettyWebClientChannelInit(SslContext sslCtx) {
+    	this.sslCtx = sslCtx;
+    }
+    
     @Override
-    protected void initChannel(SocketChannel sc) throws Exception {
+	protected void initChannel(SocketChannel sc) throws Exception {
         // TODO Auto-generated method stub
         
-        ChannelPipeline p = sc.pipeline();
-        if(ssl) {
-            SslContext sslCtx = null;
-            try {
-                sslCtx = SslContextBuilder.forClient()
+    	ChannelPipeline p = sc.pipeline();
+    	if(ssl) {
+    		SslContext sslCtx = null;
+    		try 
+    		{
+    			sslCtx = SslContextBuilder.forClient()
                         .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-                 p.addLast(sslCtx.newHandler(sc.alloc()));
-            } catch (SSLException e1) {
+    			p.addLast(sslCtx.newHandler(sc.alloc()));
+    		} 
+    		catch (SSLException e1) 
+    		{
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
         
         // Enable HTTPS if necessary.
-        if (sslCtx != null) {
+        if (sslCtx != null) 
+        {
             p.addLast(sslCtx.newHandler(sc.alloc()));
         }
     
-    //    p.addLast(new MessageDecoder());
-         
-        //chunked 된 응답을 집계하는 코덱
+//        p.addLast(new MessageDecoder());
+//        chunked 된 응답을 집계하는 코덱
 //        p.addLast("chunked",new HttpObjectAggregator(1048576));
 //        p.addLast("codec",new HttpClientCodec());
 //        p.addLast(new NettyHttpHandler(group, sc));

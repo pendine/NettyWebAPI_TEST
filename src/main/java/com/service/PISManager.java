@@ -32,7 +32,6 @@ public class PISManager implements InitializingBean{
 	//db에서 확인할 수 있는 제어기의 id로 변경.
 	private HashMap<String, PISTemplate> pisTemplateMap;  //스케줄러에서 가져가서 pis의 정보를 업데이트할것임
 		
-	
 	private ClientBootstrapFactory clientBootstrapFactory = (ClientBootstrapFactory) ApplicationContextProvider.getApplicationContext().getBean(ClientBootstrapFactory.class);
 	private ExecutorServiceLauncher launcher = (ExecutorServiceLauncher) ApplicationContextProvider.getApplicationContext().getBean("launcher");
 	private PISGroup pisGroup = (PISGroup) ApplicationContextProvider.getApplicationContext().getBean("pisGroup");

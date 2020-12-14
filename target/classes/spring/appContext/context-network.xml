@@ -190,7 +190,7 @@
 		<constructor-arg type="int" index="0" value="${client.workerthread.count}" />
 	</bean>
 	
-	<!-- PIS Client 통신 [START] -->
+	<!-- web Client 통신 설정 [START] -->
 	<bean id="NettyWebClientChannelInit" class="com.netty.initializer.NettyWebClientChannelInit">
 		<constructor-arg type="SslContext" index="0" value="io.netty.handler.ssl.SslContext" />
 	</bean>
@@ -200,7 +200,7 @@
     	<constructor-arg index="1" ref="clientChannelOptions" />
     	<constructor-arg index="2" ref="NettyWebClientChannelInit" />
 	</bean>
-	<!-- PIS Client 통신 [END] -->
+	<!-- web Client 통신 설정 [END] -->
 
 
 

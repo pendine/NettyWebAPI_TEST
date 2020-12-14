@@ -1,5 +1,7 @@
 package HTTPTest;
 
+import com.network.netty.codec.WebDecoder;
+
 /*
  * Copyright 2012 The Netty Project
  *
@@ -28,7 +30,9 @@ public class HttpSnoopClientInitializer extends ChannelInitializer<SocketChannel
     private final SslContext sslCtx;
 
     public HttpSnoopClientInitializer(SslContext sslCtx) {
+    	
         this.sslCtx = sslCtx;
+        
     }
 
     @Override
@@ -43,12 +47,13 @@ public class HttpSnoopClientInitializer extends ChannelInitializer<SocketChannel
         p.addLast(new HttpClientCodec());
 
         // Remove the following line if you don't want automatic content decompression.
-        p.addLast(new HttpContentDecompressor());
+//        p.addLast(new HttpContentDecompressor());
+        p.addLast(new WebDecoder() );
 
         // Uncomment the following line if you don't want to handle HttpContents.
         //p.addLast(new HttpObjectAggregator(1048576));
 
-        p.addLast(new HttpSnoopClientHandler());
+        p.addLast(new HttpSnoopClientHandler2());
     }
 }
 

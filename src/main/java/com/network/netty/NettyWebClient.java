@@ -37,7 +37,6 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
-	
 public class NettyWebClient {
 	
 	private static final Logger logger = LoggerFactory.getLogger(NettyWebClient.class);
@@ -45,7 +44,9 @@ public class NettyWebClient {
 	ChannelFuture cf;
 	Bootstrap b;
 	EventLoopGroup group;
-    
+	
+	SslContext sslCtx;
+	
 	String host;
 	int port;
 	int localPort;
@@ -134,7 +135,7 @@ public class NettyWebClient {
         System.out.println("toString : " + uri.toString());
         
         final boolean ssl = "https".equalsIgnoreCase(scheme);
-        final SslContext sslCtx;
+
         if (ssl) {
             sslCtx = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
         } else {
@@ -175,6 +176,11 @@ public class NettyWebClient {
     public ChannelFuture getChannelFuture() 
     {
     	return this.cf;
+    }
+    
+    public SslContext getSslContext() 
+    {
+    	return this.sslCtx;
     }
 
 }
