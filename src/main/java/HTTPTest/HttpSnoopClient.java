@@ -37,6 +37,7 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.net.URI;
 
 import com.service.WebMap;
+import com.util.ApplicationContextProvider;
 
 /**
  * A simple HTTP client that prints out the content of the HTTP response to
@@ -44,6 +45,8 @@ import com.service.WebMap;
  */
 public final class HttpSnoopClient {
 
+	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean("WebResponse");
+	
 	static final String JVMVER = System.getProperty("java.vm.version");
 	static final String VERSION = System.getProperty("java.version");
 	
@@ -71,10 +74,10 @@ public final class HttpSnoopClient {
     static String resultType = "JSON";
     
     static String base_date = "&base_date=";
-    static String base_dateInt = "20201214";
+    static String base_dateInt = "20201216";
     
     static String base_time = "&base_time=";
-    static String base_timeInt = "0500"; 
+    static String base_timeInt = "1100"; 
     
     
     static String nx = "&nx=";
@@ -105,7 +108,9 @@ public final class HttpSnoopClient {
     	
     	System.out.println(" aaa : " + aaa);
     	
+    	System.out.println("webMap setting before");
         WebMap webMap = new WebMap();
+        System.out.println("webMap setting after");
         
     	URI uri = new URI(aaa);
     	
@@ -150,13 +155,22 @@ public final class HttpSnoopClient {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
+            
+            System.out.println("bootstrap after");
+            
             b.group(group)
              .channel(NioSocketChannel.class)
              .handler(new HttpSnoopClientInitializer(sslCtx));
 
+            System.out.println("group set after ");
+            
             cf = b.connect(host, port);
+            
+            System.out.println("channel future after");
             // Make the connection attempt.
             Channel ch = cf.sync().channel();
+            
+            System.out.println("channel set after");
 //            Channel ch = b.connect(host, port).sync().channel();
 
             // Prepare the HTTP request.
@@ -168,15 +182,17 @@ public final class HttpSnoopClient {
 //                    , Unpooled.EMPTY_BUFFER
                     );
             
-            
+            System.out.println("requset set after");
             
             //야... 이걸 주석처리 하니까 웹페이지 모든 소스를 불러와버린다... 개꿀!
             //위에게 아니라 뭔가 다른걸 불러옴. 헤더셋팅을 안했는데 불러올수있을리가 없지.
             request.headers().set(HttpHeaderNames.HOST, host);
             
+            System.out.println("requset.header set host after");
             
             request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-            
+
+            System.out.println("requset.header set connection after");
             //야 인코딩 안해도 연결은 되는 것 같다.
 //            request.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);
             //이쪽 컨텐츠 인코딩타입에서 오류남.
@@ -186,8 +202,12 @@ public final class HttpSnoopClient {
             
             //인코딩 타입은 안맞춰도 오류는 없음.
             request.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.APPLICATION_JSON);
-            request.headers().set(HttpHeaderNames.CONTENT_ENCODING, HttpHeaderValues.APPLICATION_JSON);
             
+            System.out.println("requset.header set ACCEPT_ENCODING after");
+            
+            request.headers().set(HttpHeaderNames.CONTENT_ENCODING, HttpHeaderValues.APPLICATION_JSON);
+
+            System.out.println("requset.header set CONTENT_ENCODING after");
 
             //야 쿠키가 안들어가도 된다.
             // Set some example cookies.

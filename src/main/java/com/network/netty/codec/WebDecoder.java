@@ -3,6 +3,7 @@ package com.network.netty.codec;
 import java.util.List;
 
 import com.domain.WebContentTmp;
+import com.service.WebMap;
 import com.service.WebResponse;
 import com.util.ApplicationContextProvider;
 
@@ -32,6 +33,8 @@ public class WebDecoder extends HttpContentDecoder{
 	
 //	WebResponse webResponseMap = (WebResponse) ApplicationContextProvider.getApplicationContext().getBean("WebResponse");
 		
+//	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean(WebMap.class);
+
     public WebDecoder() {
         this(false);
     }
@@ -71,11 +74,27 @@ public class WebDecoder extends HttpContentDecoder{
                         {
                         	contentLength = Integer.parseInt(value.toString());
                         	System.out.println("Length : "+ contentLength );
+                        	if( WebMap.webContentMap.containsKey(ctx)) 
+                        	{
+                        		System.out.println("채널정보가 키값으로 있는 객체가 있음.");
+                        		if( WebMap.webContentMap.get(ctx).getContentLength() == 0) 
+                        		{
+                        			int tmpLen = WebMap.webContentMap.get(ctx).getContentLength();
+                        			System.out.println("채널 정보가 키값으로 있는 객체를 찾아냈고 객체의 컨텐츠 길이가 "+ tmpLen + "임");
+                        			WebMap.webContentMap.get(ctx).setContentLength(contentLength);
+                        			tmpLen = WebMap.webContentMap.get(ctx).getContentLength();
+                        			System.out.println("객체 컨텐츠 길이 설정함 : " + tmpLen );
+                        		}
+                        	}else {
+                        		System.out.println("채널정보가 키값으로 있는 객체가 없음. 리턴.");
+                        		return;
+                        	}
                         }
                     }
                 }
+            
                 System.out.println();
-                
+
             }
             else 
             {
@@ -110,7 +129,9 @@ public class WebDecoder extends HttpContentDecoder{
     	
     	if (msg instanceof HttpContent) {
     		System.out.println("디코딩 httpContent 형태로 변환 함");
+    		
     		sb.append(  ((HttpContent) msg).content().toString(CharsetUtil.UTF_8)  );
+    		
     		System.out.println(" sb.length = " + sb.toString().length()  
 					 		 + " contentLength = " + contentLength
 					 		  );
@@ -124,9 +145,10 @@ public class WebDecoder extends HttpContentDecoder{
     	trans.setContentLength(contentLength);
     	trans.setSb(sb);
     	System.out.println("trans info : " + trans.toString() );
-    	out.add(trans);
+
+//    	out.add(trans);  //과거의 내가 왜 썼는지는 모르겠지만 이렇게 쓰면 안됨.
     	
-//    	super.decode(ctx, msg, out);
+    	super.decode(ctx, msg, out);
     	
 //    	if(sb.toString().length() >= contentLength ) {
 //    		super.decode(ctx, msg, out);
@@ -143,10 +165,20 @@ public class WebDecoder extends HttpContentDecoder{
 	@Override
 	protected EmbeddedChannel newContentDecoder(String contentEncoding) throws Exception {
 		// TODO Auto-generated method stub
-		
-		System.out.println("웹 응답 디코딩할때 여기탐 newContentDecoder ");
+		System.out.println("웹 응답 디코딩할때 여기탐 newContentDecoder   contentEncoding : " + contentEncoding);
 		
 		return null;
+	}
+	
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		if( ! WebMap.webContentMap.containsKey(ctx) ) {
+			System.out.println("맵에 있는 채널 정보와 매칭되는 객체가 없음. 새로 생성함.");
+			WebMap.webContentMap.put(ctx,new WebContentTmp(ctx) );
+		}
+		
+		// TODO Auto-generated method stub
+		super.channelActive(ctx);
 	}
 
 }

@@ -1,10 +1,6 @@
 package HTTPTest;
 
-
-import org.springframework.context.ApplicationContext;
-
 import com.service.WebMap;
-import com.service.WebResponse;
 import com.util.ApplicationContextProvider;
 
 /*
@@ -33,14 +29,12 @@ import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.CharsetUtil;
 
 public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObject> {
-	
 	static int contentLength = 0;
-	
 //	WebResponse webResponseMap = (WebResponse) ApplicationContextProvider.getApplicationContext().getBean(WebResponse.class);
-	
 //	WebMap webMap = new WebMap();
 	
 //	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean(WebMap.class);
+//	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean("webMap");
 	
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {

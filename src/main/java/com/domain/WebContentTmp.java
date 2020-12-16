@@ -10,11 +10,13 @@ public class WebContentTmp {
 	
 	public WebContentTmp() 
 	{
+		System.out.println("컨텐츠 정보 확인 용 객체 생성.");
 		this.sb = new StringBuilder();
 	}
 	
 	public WebContentTmp( ChannelHandlerContext ctx ) 
 	{
+		System.out.println("컨텐츠 정보 확인 용 객체 생성.");
 		this.ctx = ctx;
 		this.sb = new StringBuilder();
 	}

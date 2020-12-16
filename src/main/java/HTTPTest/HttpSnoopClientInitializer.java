@@ -1,5 +1,6 @@
 package HTTPTest;
 
+import com.network.netty.codec.JsonDecoder;
 import com.network.netty.codec.WebDecoder;
 
 /*
@@ -23,6 +24,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContentDecompressor;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.ssl.SslContext;
 
 public class HttpSnoopClientInitializer extends ChannelInitializer<SocketChannel> {
@@ -37,23 +39,33 @@ public class HttpSnoopClientInitializer extends ChannelInitializer<SocketChannel
 
     @Override
     public void initChannel(SocketChannel ch) {
+    	
+    	System.out.println("HttpSnoopClientInitializer | initChannel ");
         ChannelPipeline p = ch.pipeline();
 
+        System.out.println("pipeline set after");
         // Enable HTTPS if necessary.
         if (sslCtx != null) {
-            p.addLast(sslCtx.newHandler(ch.alloc()));
+            p.addLast( sslCtx.newHandler( ch.alloc() ) );
         }
 
-        p.addLast(new HttpClientCodec());
+        p.addLast( new HttpClientCodec() );
 
+        System.out.println("codec set after ");
         // Remove the following line if you don't want automatic content decompression.
-//        p.addLast(new HttpContentDecompressor());
-        p.addLast(new WebDecoder() );
+//        p.addLast( new HttpContentDecompressor() );
+        
 
+        p.addLast( new WebDecoder() );
+//        p.addLast( new JsonDecoder() );
+//        p.addLast( new HttpJSONHandler() );
+        System.out.println("decoder set after");
         // Uncomment the following line if you don't want to handle HttpContents.
-        //p.addLast(new HttpObjectAggregator(1048576));
-
-        p.addLast(new HttpSnoopClientHandler2());
+//        p.addLast(new HttpObjectAggregator(1048576));
+        p.addLast( new HttpSnoopClientHandler() );
+        
+        System.out.println("handler set after");
+        
     }
 }
 

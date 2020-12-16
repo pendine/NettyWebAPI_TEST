@@ -21,13 +21,13 @@ public class Main {
 		System.out.println("Logging System Loading.....");
 		
 		LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
-
+		
 		JoranConfigurator joranConfigurator = new JoranConfigurator();
 		joranConfigurator.setContext(loggerContext);
 		loggerContext.reset();
 		
 		String loggingConfigPath = String.format("%s"+File.separator+"conf"+File.separator+"logback.xml", System.getProperty("user.dir")); // all-round
-
+		
 		try {
 			joranConfigurator.doConfigure(loggingConfigPath);
     	} catch (Exception e) {
