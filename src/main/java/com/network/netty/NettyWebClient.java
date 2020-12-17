@@ -64,16 +64,8 @@ public class NettyWebClient {
 		
 		// 2019.04.24 dsnoh
 		try {
-//			logger.info("netty 클라이언트 생성");
 			clientBootstrap = nettyBootstrapFactory.createBootstrap();
-//			clientBootstrap.remoteAddress( new InetSocketAddress(this.host, this.port) );
-//			logger.info(" 호스트 : "+ this.host + " 포트번호 : "+ this.port);
-//			this.clientBootstrap.connect(this.host, this.port);
-//			logger.info(" 부트스트랩 상태 : "+ clientBootstrap.connect(this.host, this.port));
-			
-//			this.channelFuture = clientBootstrap.connect(host, port).sync();
-//			this.channelFuture.channel().closeFuture().sync();
-//			this.returnChannel = this.channelFuture.channel();
+			logger.info("netty Web 클라이언트 nettyBootstrapFactory.createBootstr 생성");
 		
 		}catch(Exception e) {
 			logger.error("Fail to Create Bootstrap | {}",LogHelper.getPrintStackTrace(e));
@@ -107,16 +99,7 @@ public class NettyWebClient {
     			HttpVersion.HTTP_1_1
     			, HttpMethod.GET
     			, uri.toString()
-//    			, Unpooled.EMPTY_BUFFER 
     			);
-//        request.headers().set( HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED );
-//        request.headers().set( HttpHeaderNames.HOST, host+":"+port );
-//        request.headers().set( HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE );
-//      request.headers().set( HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP );
-        
-        
-//        clientBootstrap.group(group).channel(NioSocketChannel.class)//.option(ChannelOption.TCP_NODELAY, true)
-//        .handler(new NettyWebClientChannelInit(group) );
         
         System.out.println("requset host : " + host );
         System.out.println("requset port : " + port );

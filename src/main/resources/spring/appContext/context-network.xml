@@ -90,7 +90,7 @@
             <value type="java.lang.Integer">${netty.connectTimeout}</value>
         </entry>
         
-        <!-- channeloption중 몇몇은 bootestrap을 위한 옵션이 아니라 연결된 채널에 대한 옵션임.  -->
+        <!-- channel option 중 몇몇은 bootstrap을 위한 옵션이 아니라 연결된 채널에 대한 옵션임.  -->
         <!-- 출처 : https://groups.google.com/d/topic/netty-ko/BMukZdOVzcI -->
         <!--   
         <entry>
@@ -189,6 +189,21 @@
 	<bean id="clientWorkerGroup" class="io.netty.channel.nio.NioEventLoopGroup" destroy-method="shutdownGracefully">
 		<constructor-arg type="int" index="0" value="${client.workerthread.count}" />
 	</bean>
+	
+
+	<!-- InsecureTrustManagerFactory bean 생성 -->
+	<bean id = "InsecureTrustManagerFactory" class = "io.netty.handler.ssl.util.InsecureTrustManagerFactory">
+	</bean>
+	
+	
+	<!-- web Client 에서 사용할 ssl Context build -->
+	SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build()
+	<bean id="SslContext" class="io.netty.handler.ssl.SslContextBuilder">
+		
+		<constructor-arg type="SslContext" index="0" value="io.netty.handler.ssl.SslContext" />
+	</bean>
+	
+	
 	
 	<!-- web Client 통신 설정 [START] -->
 	<bean id="NettyWebClientChannelInit" class="com.netty.initializer.NettyWebClientChannelInit">

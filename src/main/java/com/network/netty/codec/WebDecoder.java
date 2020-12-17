@@ -6,6 +6,7 @@ import com.domain.WebContentTmp;
 import com.service.WebMap;
 import com.service.WebResponse;
 import com.util.ApplicationContextProvider;
+import com.util.NettyHelper;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -45,7 +46,11 @@ public class WebDecoder extends HttpContentDecoder{
 	
     @Override
     protected void decode(ChannelHandlerContext ctx, HttpObject msg, List<Object> out) throws Exception {
-    	System.out.println("웹 응답 인코딩할때 여기탐 decode ");
+    	System.out.println("[웹 응답 인코딩할때 여기탐 decode  시작 =====================================================] ");
+    	System.out.println("WebDecoder | decode | 채널값 확인용 ");
+    	System.out.println("ctx : "+ctx.toString() + " ip : "+ NettyHelper.getRemoteAddress( ctx.channel() ) );
+    	System.out.println("ctx.channel id : " + ctx.channel().id());
+    	System.out.println("ctx.name : " + ctx.name());
     	
     	int contentLength = 0;
     	
@@ -55,7 +60,7 @@ public class WebDecoder extends HttpContentDecoder{
     	
     	if (msg instanceof HttpResponse) 
     	{
-    		System.out.println("디코딩할때 HttpResponse 로  변환함.");
+    		System.out.println("[=====디코딩할때 HttpResponse 로  변환 시작 부분.=======================]");
 
             HttpResponse response = (HttpResponse) msg;
 
@@ -72,7 +77,7 @@ public class WebDecoder extends HttpContentDecoder{
                         System.out.println("HEADER: " + name + " = " + value);
                         if(name.equals("Content-Length")) 
                         {
-                        	contentLength = Integer.parseInt(value.toString());
+                        	contentLength = Integer.parseInt( value.toString() );
                         	System.out.println("Length : "+ contentLength );
                         	if( WebMap.webContentMap.containsKey(ctx)) 
                         	{
@@ -80,12 +85,14 @@ public class WebDecoder extends HttpContentDecoder{
                         		if( WebMap.webContentMap.get(ctx).getContentLength() == 0) 
                         		{
                         			int tmpLen = WebMap.webContentMap.get(ctx).getContentLength();
-                        			System.out.println("채널 정보가 키값으로 있는 객체를 찾아냈고 객체의 컨텐츠 길이가 "+ tmpLen + "임");
+                        			System.out.println("채널 정보가 키값으로 있는 객체를 찾아냈고 객체의 컨텐츠 길이가 0 이므로 재설정대상임.");
                         			WebMap.webContentMap.get(ctx).setContentLength(contentLength);
                         			tmpLen = WebMap.webContentMap.get(ctx).getContentLength();
                         			System.out.println("객체 컨텐츠 길이 설정함 : " + tmpLen );
                         		}
-                        	}else {
+                        	}
+                        	else 
+                        	{
                         		System.out.println("채널정보가 키값으로 있는 객체가 없음. 리턴.");
                         		return;
                         	}
@@ -100,14 +107,23 @@ public class WebDecoder extends HttpContentDecoder{
             {
             	System.out.println("Header is Empty");
             }
-            
+
+    		System.out.println("[=====디코딩할때 HttpResponse 로  변환 끝부분.=======================]");
+
         }
-    	
-    	System.out.println(" Content-Length 세팅 확인용 : " + contentLength );
     	
     	if (msg instanceof HttpMessage) 
     	{
-    		
+
+    		System.out.println("[=====디코딩할때 HttpMessage 로  변환 시작부분.=======================]");
+
+    		if( WebMap.webContentMap.containsKey(ctx)) 
+        	{
+        		System.out.println("채널정보가 키값으로 있는 객체가 있음. 컨텐츠 길이 : " + WebMap.webContentMap.get(ctx).getContentLength());
+        	}else {
+        		System.out.println("채널정보가 키값으로 있는 객체가 없음. 리턴.");
+        		return;
+        	}
     		System.out.println("디코딩할때 HttpMessage 로  변환함.");
     		
 			final HttpMessage message = (HttpMessage) msg;
@@ -122,22 +138,73 @@ public class WebDecoder extends HttpContentDecoder{
 								 + " contentLength = " + contentLength
 								  );
             }
+			
+	    	System.out.println("[웹 응답 인코딩할때 여기탐 decode  끝 =====================================================] ");
+
     	}
     	
     	
     	
     	
     	if (msg instanceof HttpContent) {
+
+    		System.out.println("[=====디코딩할때 HttpContent 로  변환 시작부분.=======================]");
+
+    		if( WebMap.webContentMap.containsKey(ctx)) 
+        	{
+        		System.out.println("채널정보가 키값으로 있는 객체가 있음. 컨텐츠 길이 : " + WebMap.webContentMap.get(ctx).getContentLength() + " 문자열 길이 : " + WebMap.webContentMap.get(ctx).getSb().toString().length() );
+        		
+        		if(WebMap.webContentMap.get(ctx).getContentLength() > WebMap.webContentMap.get(ctx).getSb().toString().length() ) {
+        			System.out.println("컨텐츠 길이보다 짧으므로 덧붙이기~");
+	        		WebMap.webContentMap.get(ctx).getSb().append( ((HttpContent) msg).content().toString(CharsetUtil.UTF_8) );
+	        		System.out.println("키캆으로 객체 정보에 설정한 객체 내용 :");
+	        		System.out.println( WebMap.webContentMap.get(ctx).getSb().toString() );
+	        		
+	        		System.out.println("덧붙이고 난 뒤의 컨텐츠 길이 : " + WebMap.webContentMap.get(ctx).getContentLength() + " 문자열 길이 : " + WebMap.webContentMap.get(ctx).getSb().toString().length() );
+	        		
+	        		
+	        		try 
+	        		{
+		        		String resultcode = findStringValue("\"",WebMap.webContentMap.get(ctx).getSb().toString(),"resultCode");
+		        		WebMap.webContentMap.get(ctx).getResponse().getHeader().setResultcode(resultcode);
+	
+		        		String resultMsg = findStringValue("\"",WebMap.webContentMap.get(ctx).getSb().toString(),"resultMsg");
+		        		WebMap.webContentMap.get(ctx).getResponse().getHeader().setResultMsg(resultMsg);
+	        		}
+	        		catch(Exception e)
+	        		{
+	        			e.printStackTrace();
+	        		}
+	        		
+        		}
+        		
+        		if( !WebMap.webContentMap.get(ctx).getResponse().getHeader().getResultcode().equals("00") ) {
+        			System.out.println("정상 코드가 아님! return!");
+        			System.out.println("현재 코드값 : " + WebMap.webContentMap.get(ctx).getResponse().getHeader().getResultcode() );
+        			return;
+        		}
+        		
+        		if(WebMap.webContentMap.get(ctx).getContentLength() <= WebMap.webContentMap.get(ctx).getSb().toString().length())
+        		{
+        			System.out.println("컨텐츠 길이보다 길거나 같으므로 다음 메소드인 Read로 넘겨버리기");
+        			super.decode(ctx, msg, out);
+        			System.out.println("넘김 완료");
+        		}
+        	}else {
+        		System.out.println("채널정보가 키값으로 있는 객체가 없음. 리턴.");
+        		return;
+        	}
+    		
     		System.out.println("디코딩 httpContent 형태로 변환 함");
     		
     		sb.append(  ((HttpContent) msg).content().toString(CharsetUtil.UTF_8)  );
     		
-    		System.out.println(" sb.length = " + sb.toString().length()  
-					 		 + " contentLength = " + contentLength
-					 		  );
+    		System.out.println(" sb.length = " + sb.toString().length()  + " contentLength = " + contentLength );
+    		
+
+    		System.out.println("[=====디코딩할때 HttpContent 로  변환 끝부분.=======================]");
+
     	}
-    	
-//    	out.add( (HttpResponse) msg); //에러
     	
     	WebContentTmp trans = new WebContentTmp(); 
     	
@@ -146,9 +213,7 @@ public class WebDecoder extends HttpContentDecoder{
     	trans.setSb(sb);
     	System.out.println("trans info : " + trans.toString() );
 
-//    	out.add(trans);  //과거의 내가 왜 썼는지는 모르겠지만 이렇게 쓰면 안됨.
-    	
-    	super.decode(ctx, msg, out);
+//    	super.decode(ctx, msg, out);
     	
 //    	if(sb.toString().length() >= contentLength ) {
 //    		super.decode(ctx, msg, out);
@@ -157,7 +222,7 @@ public class WebDecoder extends HttpContentDecoder{
 //    		System.out.println("길이 안맞아서 리턴함");
 //    		return;
 //    	}
-    	    	
+    	System.out.println("[웹 응답 인코딩할때 여기탐 decode  끝=====================================================] ");
     }
     
     
@@ -170,11 +235,32 @@ public class WebDecoder extends HttpContentDecoder{
 		return null;
 	}
 	
+	public String findStringValue( String seperate, String totalStr, String target) {
+		int start = totalStr.indexOf(seperate, totalStr.indexOf(target)+ target.length() + 1); 
+		int end	  = totalStr.indexOf(seperate,start+1);
+		
+		return totalStr.substring(start+1, end);
+	}
+	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		if( ! WebMap.webContentMap.containsKey(ctx) ) {
+		if( ! WebMap.webContentMap.containsKey(ctx) ) 
+		{
 			System.out.println("맵에 있는 채널 정보와 매칭되는 객체가 없음. 새로 생성함.");
+			System.out.println("WebDecoder | channelActive | 채널값 확인용 ");
+	    	System.out.println("ctx : "+ctx.toString() + " ip : "+ NettyHelper.getRemoteAddress( ctx.channel() ) );
+	    	System.out.println("ctx.channel id : " + ctx.channel().id());
+	    	System.out.println("ctx.name : " + ctx.name());
+	    	
 			WebMap.webContentMap.put(ctx,new WebContentTmp(ctx) );
+		}
+		else
+		{
+			System.out.println("WebDecoder | channelActive | 채널값 확인용 ");
+	    	System.out.println("ctx : "+ctx.toString() + " ip : "+ NettyHelper.getRemoteAddress( ctx.channel() ) );
+	    	System.out.println("ctx.channel id : " + ctx.channel().id());
+	    	System.out.println("ctx.name : " + ctx.name());
+	    	
 		}
 		
 		// TODO Auto-generated method stub

@@ -1,11 +1,13 @@
 package com.service;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import com.domain.WebContentTmp;
+import com.util.NettyHelper;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -14,6 +16,7 @@ import io.netty.channel.ChannelHandlerContext;
 public class WebMap implements InitializingBean{
 	
 	public static HashMap< ChannelHandlerContext , WebContentTmp > webContentMap;
+	
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -34,24 +37,33 @@ public class WebMap implements InitializingBean{
 	
 	public WebMap() {
 		webContentMap = new HashMap<ChannelHandlerContext, WebContentTmp>();
-
 	}
 	
-	public HashMap<ChannelHandlerContext, WebContentTmp> getWebContentTmpMap(){
-		return this.webContentMap;
+	public static HashMap<ChannelHandlerContext, WebContentTmp> getWebContentTmpMap(){
+		return webContentMap;
 	}
 	
-	public WebContentTmp getWebContentTmpByCTX(ChannelHandlerContext ctx) {
-		return webContentMap.get(ctx);
+	/**
+	 * web content 를 문자열로 저장할 객체 맵퍼에서,
+	 * 채널 핸들러 컨텍스트의 채널에서 아이피로 구분하여, 원격지 주소에 해당하는 아이피 를 갖고있는 객체 정보를 반환함.
+	 * */
+	public static WebContentTmp getWebContentTmpByCTX(ChannelHandlerContext ctx) {
+		for(Entry<ChannelHandlerContext, WebContentTmp> maps : webContentMap.entrySet() ) {
+			if( NettyHelper.getRemoteAddress( maps.getKey().channel() ).equals( NettyHelper.getRemoteAddress(ctx.channel()) ) )
+			{
+				return maps.getValue();
+			}
+		}
+		return null;
 	}
 	
-	public void setWebContentTmp(ChannelHandlerContext ctx , WebContentTmp wt) {
-		this.webContentMap.put(ctx, wt);
+	public static void setWebContentTmp(ChannelHandlerContext ctx , WebContentTmp wt) {
+		webContentMap.put(ctx, wt);
 	}
 	
-	public void setWebContentTmpByCTX(ChannelHandlerContext ctx ) {
+	public static void setWebContentTmpByCTX(ChannelHandlerContext ctx ) {
 		System.out.println("CTX : " + ctx.toString());
-		this.webContentMap.put(ctx, new WebContentTmp() );
+		webContentMap.put(ctx, new WebContentTmp() );
 	}
 
 

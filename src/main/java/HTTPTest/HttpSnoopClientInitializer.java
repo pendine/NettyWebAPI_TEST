@@ -2,6 +2,8 @@ package HTTPTest;
 
 import com.network.netty.codec.JsonDecoder;
 import com.network.netty.codec.WebDecoder;
+import com.network.netty.codec.WebDecoder2;
+import com.service.WebMap;
 
 /*
  * Copyright 2012 The Netty Project
@@ -44,6 +46,9 @@ public class HttpSnoopClientInitializer extends ChannelInitializer<SocketChannel
         ChannelPipeline p = ch.pipeline();
 
         System.out.println("pipeline set after");
+        
+        
+//codec------------------------------------------------------------------
         // Enable HTTPS if necessary.
         if (sslCtx != null) {
             p.addLast( sslCtx.newHandler( ch.alloc() ) );
@@ -54,17 +59,26 @@ public class HttpSnoopClientInitializer extends ChannelInitializer<SocketChannel
         System.out.println("codec set after ");
         // Remove the following line if you don't want automatic content decompression.
 //        p.addLast( new HttpContentDecompressor() );
+//codec------------------------------------------------------------------
         
-
+        
+//Decoder------------------------------------------------------------------
         p.addLast( new WebDecoder() );
-//        p.addLast( new JsonDecoder() );
-//        p.addLast( new HttpJSONHandler() );
+//        p.addLast( new WebDecoder2() );
+
         System.out.println("decoder set after");
+//Decoder------------------------------------------------------------------
+        
+        
+        
+//handler------------------------------------------------------------------
         // Uncomment the following line if you don't want to handle HttpContents.
 //        p.addLast(new HttpObjectAggregator(1048576));
         p.addLast( new HttpSnoopClientHandler() );
-        
+//        p.addLast( new HttpSnoopClientHandler2() );
         System.out.println("handler set after");
+//handler------------------------------------------------------------------
+        
         
     }
 }

@@ -113,9 +113,6 @@ public class ClientHeader implements Message{
 			(응답 헤더)
 			https://gmlwjd9405.github.io/2019/01/28/http-header-types.html
 		
-		
-		
-		
 			*HTTP 요청 헤더
 			HTTP 헤더 내 요청 헤더 (Request Header) 항목
 			
@@ -150,12 +147,6 @@ public class ClientHeader implements Message{
 			인증 토큰(JWT/Bearer 토큰)을 서버로 보낼 때 사용하는 헤더
 			“토큰의 종류(Basic, Bearer 등) + 실제 토큰 문자”를 전송
 	
-	Origin
-			서버로 POST 요청을 보낼 때, 요청이 어느 주소에서 시작되었는지 나타낸다.
-			여기서 요청을 보낸 주소와 받는 주소가 다르면 CORS 에러가 발생한다.
-			응답 헤더의 Access-Control-Allow-Origin와 관련
-			다음 4개는 주로 HTTP 메세지 Body의 속성 또는 내용 협상용 항목들
-	
 		Accept
 			클라이언트 자신이 원하는 미디어 타입 및 우선순위를 알린다.
 			텍스트(text/html,text/plain,…),이미지(image/jpeg,…) 등
@@ -171,31 +162,6 @@ public class ClientHeader implements Message{
 			클라이언트 자신이 원하는 가능한 언어
 			각각이 HTTP Entity Header 항목 중에 Content-Type, Content-Type charset-xxx, Content-Encoding, Content-Language과 일대일로 대응된다.
 */
-
-	/*		
-			헤더정보 예시
-			Get방식
-			GET /home.html HTTP/1.1
-			Host: developer.mozilla.org
-			User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
-			Accept: text/html,application/xhtml+xml,application/xml;q=0.9, *  /  *;q=0.8
-			Accept-Language: en-US,en;q=0.5
-			Accept-Encoding: gzip, deflate, br
-			Referer: https://developer.mozilla.org/testpage.html
-			Connection: keep-alive
-			Upgrade-Insecure-Requests: 1
-			If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
-			If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
-			Cache-Control: max-age=0
-			
-			Post방식
-			POST /myform.html HTTP/1.1
-			Host: developer.mozilla.org
-			User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
-			Content-Length: 128
-			https://gmlwjd9405.github.io/2019/01/28/http-header-types.html
-		
-	*/
 	
 //	초단기실황조회
 //	http://apis.data.go.kr/1360000/VilageFcstInfoService/getUltraSrtNcst

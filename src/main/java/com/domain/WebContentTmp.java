@@ -1,12 +1,16 @@
 package com.domain;
 
 import io.netty.channel.ChannelHandlerContext;
+import lombok.Data;
 
+@Data
 public class WebContentTmp {
 	
 	ChannelHandlerContext ctx;
 	int contentLength = 0;
 	StringBuilder sb;
+	
+	Response response = new Response();
 	
 	public WebContentTmp() 
 	{

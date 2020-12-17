@@ -45,13 +45,11 @@ import com.util.ApplicationContextProvider;
  */
 public final class HttpSnoopClient {
 
-	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean("WebResponse");
-	
-	static final String JVMVER = System.getProperty("java.vm.version");
-	static final String VERSION = System.getProperty("java.version");
+//	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean("WebResponse");
+//	static final String JVMVER = System.getProperty("java.vm.version");
+//	static final String VERSION = System.getProperty("java.version");
 	
 	static ChannelFuture cf;
-	
 	
     static final String URL = System.getProperty("url", "https://google.com:443/");
     
@@ -74,7 +72,7 @@ public final class HttpSnoopClient {
     static String resultType = "JSON";
     
     static String base_date = "&base_date=";
-    static String base_dateInt = "20201216";
+    static String base_dateInt = "20201217";
     
     static String base_time = "&base_time=";
     static String base_timeInt = "1100"; 
@@ -87,7 +85,7 @@ public final class HttpSnoopClient {
     static int nyInt = 127;
     
     public static void main(String[] args) throws Exception {
-//        URI uri = new URI(URL);
+//		URI uri = new URI(URL);
     	
 //    	URI uri = new URI(weather);
     	
@@ -114,8 +112,8 @@ public final class HttpSnoopClient {
         
     	URI uri = new URI(aaa);
     	
-        System.out.println("Java VM.Ver : " + JVMVER );
-        System.out.println("Java VERSION : " + VERSION );
+//        System.out.println("Java VM.Ver : " + JVMVER );
+//        System.out.println("Java VERSION : " + VERSION );
         System.out.println("Scheme : "+uri.getScheme());
         System.out.println("Host : "+uri.getHost());
         System.out.println("Port : "+uri.getPort());
@@ -164,6 +162,8 @@ public final class HttpSnoopClient {
 
             System.out.println("group set after ");
             
+            
+            System.out.println("Host : " + host);
             cf = b.connect(host, port);
             
             System.out.println("channel future after");
