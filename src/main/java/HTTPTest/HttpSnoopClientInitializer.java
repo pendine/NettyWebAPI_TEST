@@ -27,6 +27,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.ssl.SslContext;
 
 public class HttpSnoopClientInitializer extends ChannelInitializer<SocketChannel> {
@@ -65,10 +66,9 @@ public class HttpSnoopClientInitializer extends ChannelInitializer<SocketChannel
 //Decoder------------------------------------------------------------------
         p.addLast( new WebDecoder() );
 //        p.addLast( new WebDecoder2() );
-
+//        p.addLast( new JsonObjectDecoder() );
         System.out.println("decoder set after");
 //Decoder------------------------------------------------------------------
-        
         
         
 //handler------------------------------------------------------------------

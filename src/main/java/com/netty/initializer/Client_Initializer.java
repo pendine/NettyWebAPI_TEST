@@ -3,26 +3,21 @@ package com.netty.initializer;
 import java.util.Properties;
 
 import com.handler.Client_read_Handler;
-import com.handler.OPChannelInboundHandler;
 import com.handler.OPIdleStateHandler;
-import com.handler.PISChannelInboundHandler;
-import com.handler.PISIdleStateHandler;
 import com.network.netty.codec.ClientDecoder;
 import com.network.netty.codec.ClientEncoder;
-import com.network.netty.codec.OPDecoder;
-import com.network.netty.codec.OPEncoder;
-import com.network.netty.codec.PISTCPDecoder;
-import com.network.netty.codec.PISTCPEncoder;
 import com.util.ApplicationContextProvider;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 
-public class Client_Initializer extends ChannelInitializer<Channel> {
+public class Client_Initializer extends ChannelInitializer<Channel> 
+{
 
 	@Override
-	protected void initChannel(Channel channel) throws Exception {
+	protected void initChannel(Channel channel) throws Exception 
+	{
 		ChannelPipeline pipeline = channel.pipeline();
 
 		Properties contextProperties = (Properties)ApplicationContextProvider.getApplicationContext().getBean("contextProperties");

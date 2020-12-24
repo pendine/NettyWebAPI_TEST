@@ -4,6 +4,7 @@ import javax.net.ssl.SSLException;
 
 import com.handler.NettyHttpHandler;
 import com.network.netty.codec.JsonDecoder;
+import com.network.netty.codec.WebDecoder;
 
 import HTTPTest.HttpSnoopClientHandler;
 import io.netty.channel.ChannelInitializer;
@@ -26,10 +27,6 @@ public class NettyWebClientChannelInit extends ChannelInitializer<SocketChannel>
     
     private EventLoopGroup group;
     
-//	public NettyWebClientChannelInit(EventLoopGroup group) {
-//    	this.group = group;
-//	}
-     
     public NettyWebClientChannelInit(SslContext sslCtx) {
     	this.sslCtx = sslCtx;
     }
@@ -40,27 +37,7 @@ public class NettyWebClientChannelInit extends ChannelInitializer<SocketChannel>
         
     	System.out.println("NettyWebClientChannelInit | initChannel ");
     	ChannelPipeline p = sc.pipeline();
-    	if(ssl) {
-    		SslContext sslCtx = null;
-    		try 
-    		{
-    			sslCtx = SslContextBuilder.forClient()
-                        .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-    			p.addLast(sslCtx.newHandler(sc.alloc()));
-    		} 
-    		catch (SSLException e1) 
-    		{
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-        }
         
-        // Enable HTTPS if necessary.
-        if (sslCtx != null) 
-        {
-            p.addLast(sslCtx.newHandler(sc.alloc()));
-        }
-    
 //        p.addLast(new MessageDecoder());
 //        chunked 된 응답을 집계하는 코덱
 //        p.addLast("chunked",new HttpObjectAggregator(1048576));
@@ -69,16 +46,22 @@ public class NettyWebClientChannelInit extends ChannelInitializer<SocketChannel>
         
         p.addLast(new HttpClientCodec());
 
+        System.out.println("codec set after ");
+        
         // Remove the following line if you don't want automatic content decompression.
 //        p.addLast(new HttpContentDecompressor());
         
 //        p.addLast(new JsonObjectDecoder());
         p.addLast(new JsonDecoder());
-
+        
+//        p.addLast( new WebDecoder() );
+        System.out.println("decoder set after");
+        
         // Uncomment the following line if you don't want to handle HttpContents.
         //p.addLast(new HttpObjectAggregator(1048576));
 
         p.addLast(new HttpSnoopClientHandler());
+        System.out.println("handler set after");
         
     }
 }

@@ -1,5 +1,8 @@
 package com.domain;
 
+import com.protocol.weather.Body;
+import com.protocol.weather.Header;
+
 import lombok.Data;
 
 @Data

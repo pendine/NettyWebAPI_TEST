@@ -13,15 +13,15 @@
 
     <appender name="MAIN_LOG" class="ch.qos.logback.classic.sift.SiftingAppender">
 	    <discriminator>
-			<key>PIS</key>
+			<key>WEB</key>
 	      	<defaultValue>Server_Main_Log</defaultValue>
 	    </discriminator>
     	<sift>
     	<!-- rolling file appender = 파일 압축 수행 (비동기수행으로 어플리케이션에 영향없음.) -->
-      		<appender name="MAIN_LOG-SERVER_ID-${PIS}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-				<file>${user.dir}/log/PIS_ID_${PIS}/PIS_${PIS}_%d{yyyy-MM-dd}.%i.log</file>              		
+      		<appender name="MAIN_LOG-SERVER_ID-${WEB}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${user.dir}/log/WEB/Web_API_ACCESS_%d{yyyy-MM-dd}.%i.log</file>              		
         		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-       				<fileNamePattern>${user.dir}/log/PIS_ID_${PIS}/PIS_${PIS}_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+       				<fileNamePattern>${user.dir}/log/WEB/Web_API_ACCESS_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
 		  			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                			<maxFileSize> 10mb </maxFileSize>
            			</timeBasedFileNamingAndTriggeringPolicy>
@@ -78,31 +78,7 @@
     </logger>
     
     
-    <appender name="JOB" class="ch.qos.logback.classic.sift.SiftingAppender">
-	    <discriminator>
-			<key>PIS</key>
-	      	<defaultValue>PISJOB</defaultValue>
-	    </discriminator>
-    	<sift>
-      		<appender name="JOB_LOG-${PIS}-job" class="ch.qos.logback.core.rolling.RollingFileAppender">
- 				<file>${user.dir}/log/PIS_ID_${PIS}/JOB_${PIS}_%d{yyyy-MM-dd}.%i.log</file>                 		
-        		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-       				<fileNamePattern>${user.dir}/log/PIS_ID_${PIS}/JOB_${PIS}_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
-		  			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-               			<maxFileSize> 10mb </maxFileSize>
-           			</timeBasedFileNamingAndTriggeringPolicy>
-          			<maxHistory> 7 </maxHistory>
-        		</rollingPolicy>
-        		<encoder>
-        			<charset>utf8</charset>
-        			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %-40.40logger{39}[%M : %L] | %msg %n</pattern>
-        		</encoder>
-      		</appender>
-    	</sift>
-  	</appender>
-  	
-  	
-  	  <appender name="Operation" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <appender name="Operation" class="ch.qos.logback.classic.sift.SiftingAppender">
 	    <discriminator>
 			<key>OP</key>
 	    </discriminator>
@@ -124,41 +100,12 @@
     	</sift>
   	</appender>
   	
-  	<logger name = "com.it_cous">
+  	<logger name = "com">
   		<level value="info" />
   		<appender-ref ref="Operation" />
   	</logger> 
     
     
-    <appender name="Disconnected" class="ch.qos.logback.classic.sift.SiftingAppender">
-	    <discriminator>
-			<key>PIS</key>
-	      	<defaultValue>Server_Main_Log</defaultValue>
-	    </discriminator>
-    	<sift>
-    	<!-- rolling file appender = 파일 압축 수행 (비동기수행으로 어플리케이션에 영향없음.) -->
-      		<appender name="Disconnected_ID-${PIS}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-				<file>${user.dir}/log/PIS_ID_${PIS}/Disconnected_PIS_${PIS}_%d{yyyy-MM-dd}.%i.log</file>              		
-        		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-       				<fileNamePattern>${user.dir}/log/PIS_ID_${PIS}/Disconnected_PIS_${PIS}_%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
-		  			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-               			<maxFileSize> 10mb </maxFileSize>
-           			</timeBasedFileNamingAndTriggeringPolicy>
-          			<maxHistory> 7 </maxHistory>
-        		</rollingPolicy>
-        		<encoder>
-        			<charset>utf8</charset>
-        			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %-40.40logger{39}[%M : %L] | %msg %n</pattern>
-        		</encoder>
-      		</appender>
-    	</sift>
-  	</appender>
-  	
-	<logger name = "com.it_cous.network">
-  		<level value="info" />
-  		<appender-ref ref="Disconnected" />
-  	</logger>
-  	
   	
     
 </configuration>

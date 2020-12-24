@@ -3,6 +3,8 @@ package com.service;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,10 @@ import io.netty.channel.ChannelHandlerContext;
 
 @Service("webMap")
 public class WebMap implements InitializingBean{
+
+	private static final Logger logger = LoggerFactory.getLogger(WebMap.class);
 	
-	public static HashMap< ChannelHandlerContext , WebContentTmp > webContentMap;
-	
+	public static HashMap< ChannelHandlerContext , WebContentTmp > webContentMap = new HashMap<ChannelHandlerContext, WebContentTmp>();
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -26,6 +29,8 @@ public class WebMap implements InitializingBean{
 	}
 	
 	public void init() {
+//		webContentMap = new HashMap<ChannelHandlerContext, WebContentTmp>();
+		
 		masterLoading();
 		System.out.println("마스터 로딩 이후");
 //		webContentMap = new HashMap<ChannelHandlerContext, WebContentTmp>();
@@ -36,7 +41,7 @@ public class WebMap implements InitializingBean{
 	}
 	
 	public WebMap() {
-		webContentMap = new HashMap<ChannelHandlerContext, WebContentTmp>();
+//		webContentMap = new HashMap<ChannelHandlerContext, WebContentTmp>();
 	}
 	
 	public static HashMap<ChannelHandlerContext, WebContentTmp> getWebContentTmpMap(){

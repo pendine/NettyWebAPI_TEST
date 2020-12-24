@@ -1,29 +1,23 @@
 package com.network.netty.listener;
 
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.domain.PISTemplate;
 import com.network.netty.NettyTCPClient;
 import com.network.netty.bootstrap.ClientBootstrapFactory;
-import com.service.PISManager;
 import com.util.ApplicationContextProvider;
 import com.util.LogHelper;
 import com.util.NettyHelper;
 
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 
 public class ConnectFutureListener implements ChannelFutureListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConnectFutureListener.class);
-	private PISManager pisManager = (PISManager) ApplicationContextProvider.getApplicationContext().getBean("pisManager");
 	private ClientBootstrapFactory clientBootstrapFactory = (ClientBootstrapFactory) ApplicationContextProvider.getApplicationContext().getBean("PIS_ClientBootstrapFactory");
 	
 	//private final NettyTCPClient nettyClient;
@@ -40,8 +34,6 @@ public class ConnectFutureListener implements ChannelFutureListener {
 	
 		try {
 			String ip = NettyHelper.getRemoteAddress(channelFuture.channel());
-			PISTemplate templte = pisManager.getPISTemplateByIp( ip );
-			MDC.put("PIS", templte.getPIS_ID() );
 			
 			if (!channelFuture.isSuccess()) 
 			{
@@ -64,7 +56,7 @@ public class ConnectFutureListener implements ChannelFutureListener {
 				logger.warn("ConnectFutureListener | operationComplete | channelFuture.isSuccess else ");
 			}
 			if (channelFuture.isSuccess()) {
-				templte.setCh(channelFuture.channel() );
+
 			}
 			MDC.remove("PIS");
 		}

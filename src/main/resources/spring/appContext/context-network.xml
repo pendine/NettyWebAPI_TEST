@@ -69,11 +69,9 @@
         </entry>
     </util:map>
 
-
 <!-- ************************************************************************************************* -->
 <!-- Socket channel options for TCP Server Bootstrap                                                   -->
 <!-- ************************************************************************************************* -->
-
 <!--  server bootstrap에서는 일부 채널 옵션을 사용할 수 없음. = 클라이언트에서 사용할 수 있는 채널 옵션보다 적음.
 -->
     <util:map id="tcpChannelOptions" map-class="java.util.HashMap">
@@ -173,7 +171,7 @@
 		</property>
 	</bean>	
 
-	
+
 	<!-- 부트스트랩에서 패킷을 수신,송신 담당 -->
 	<!-- 서버 이벤트루프그룹 생성 -->
 	<bean id="serverAcceptGroup" class="io.netty.channel.nio.NioEventLoopGroup" destroy-method="shutdownGracefully">
@@ -190,24 +188,8 @@
 		<constructor-arg type="int" index="0" value="${client.workerthread.count}" />
 	</bean>
 	
-
-	<!-- InsecureTrustManagerFactory bean 생성 -->
-	<bean id = "InsecureTrustManagerFactory" class = "io.netty.handler.ssl.util.InsecureTrustManagerFactory">
-	</bean>
-	
-	
-	<!-- web Client 에서 사용할 ssl Context build -->
-	SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build()
-	<bean id="SslContext" class="io.netty.handler.ssl.SslContextBuilder">
-		
-		<constructor-arg type="SslContext" index="0" value="io.netty.handler.ssl.SslContext" />
-	</bean>
-	
-	
-	
 	<!-- web Client 통신 설정 [START] -->
 	<bean id="NettyWebClientChannelInit" class="com.netty.initializer.NettyWebClientChannelInit">
-		<constructor-arg type="SslContext" index="0" value="io.netty.handler.ssl.SslContext" />
 	</bean>
 	
 	<bean id="ClientBootstrapFactory" class="com.network.netty.bootstrap.ClientBootstrapFactory">

@@ -3,8 +3,6 @@ package com.protocol.client;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import com.enums.eOPOpcode;
-import com.enums.ePISOpcode;
 import com.google.common.primitives.UnsignedInteger;
 import com.protocol.Message;
 import com.util.ByteToHex;

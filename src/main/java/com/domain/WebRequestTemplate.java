@@ -8,6 +8,7 @@ public class WebRequestTemplate {
 	private int pageNo = 1; //기본값
 	private int numOfRows = 10; //기본값
 	private String dataType;
+	private String Date;
 	private String DateDay;
 	private String Datetime;
 	private String x;//double형
@@ -47,16 +48,31 @@ public class WebRequestTemplate {
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
 	}
+	public String getDate() {
+		return DateDay;
+	}
+	public void setDate(String dateDay) {
+		if(dateDay.length()!=8)
+			new Exception("Exception on Date Length : " + dateDay.length() 
+						+" Date Length is 8 ('YYYYMMDD')");
+		DateDay = dateDay;
+	}
 	public String getDateDay() {
 		return DateDay;
 	}
 	public void setDateDay(String dateDay) {
+		if(dateDay.length()!=8)
+			new Exception("Exception on DateDay Length : " + dateDay.length() 
+						+" DateDay Length is 8 ('YYYYMMDD')");
 		DateDay = dateDay;
 	}
 	public String getDatetime() {
 		return Datetime;
 	}
 	public void setDatetime(String datetime) {
+		if(datetime.length()!=4)
+			new Exception("Exception on Datetime Length : " + Datetime.length() 
+						+" DateDay Length is 4 ('HHMM')");
 		Datetime = datetime;
 	}
 	public String getX() {

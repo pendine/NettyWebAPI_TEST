@@ -17,7 +17,6 @@
     <bean id="applicationContextProvder" class="com.util.ApplicationContextProvider" />
                             
 	<context:component-scan base-package="com" />
-		
 	<context:annotation-config/>
 
 	<bean id="contextProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">

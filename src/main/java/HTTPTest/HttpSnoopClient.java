@@ -45,7 +45,7 @@ import com.util.ApplicationContextProvider;
  */
 public final class HttpSnoopClient {
 
-//	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean("WebResponse");
+	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean("webMap");
 //	static final String JVMVER = System.getProperty("java.vm.version");
 //	static final String VERSION = System.getProperty("java.version");
 	
@@ -72,7 +72,7 @@ public final class HttpSnoopClient {
     static String resultType = "JSON";
     
     static String base_date = "&base_date=";
-    static String base_dateInt = "20201217";
+    static String base_dateInt = "20201224";
     
     static String base_time = "&base_time=";
     static String base_timeInt = "1100"; 
@@ -85,10 +85,6 @@ public final class HttpSnoopClient {
     static int nyInt = 127;
     
     public static void main(String[] args) throws Exception {
-//		URI uri = new URI(URL);
-    	
-//    	URI uri = new URI(weather);
-    	
     	String aaa = weather.toString() 
     				+ viewVilageFcst 
     				+ service 
@@ -100,14 +96,14 @@ public final class HttpSnoopClient {
     				+ nx + nxInt
     				+ ny + nyInt;
     	
-    	
 //    	String aaa = 
-//    	"http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst?serviceKey=fW24b%2FUEGRWODAIUo6Nx0owzv7jQSggx5iSzj0JeQY4z1UHlo4spwka5vM4XeuRMLpKwg6a%2B%2F%2Bu65jtdoFl67g%3D%3D&pageNo=1&numOfRows=10&dataType=JSON&base_date=20201214&base_time=0500&nx=55&ny=127";
+//    	"http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst?
+//    	serviceKey=fW24b%2FUEGRWODAIUo6Nx0owzv7jQSggx5iSzj0JeQY4z1UHlo4spwka5vM4XeuRMLpKwg6a%2B%2F%2Bu65jtdoFl67g%3D%3D
+//    	&pageNo=1&numOfRows=10&dataType=JSON&base_date=20201214&base_time=0500&nx=55&ny=127";
     	
     	System.out.println(" aaa : " + aaa);
-    	
     	System.out.println("webMap setting before");
-        WebMap webMap = new WebMap();
+//        WebMap webMap = new WebMap();
         System.out.println("webMap setting after");
         
     	URI uri = new URI(aaa);
@@ -123,6 +119,7 @@ public final class HttpSnoopClient {
         String host = uri.getHost() == null? "127.0.0.1" : uri.getHost();
                 
         int port = uri.getPort();
+        System.out.println("PORT : " + port );
         if (port == -1) 
         {
             if ("http".equalsIgnoreCase(scheme)) 
@@ -134,7 +131,8 @@ public final class HttpSnoopClient {
                 port = 443;
             }
         }
-
+        System.out.println("PORT : " + port );
+        
         if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
             System.err.println("Only HTTP(S) is supported.");
             return;
@@ -144,7 +142,10 @@ public final class HttpSnoopClient {
         final boolean ssl = "https".equalsIgnoreCase(scheme);
         final SslContext sslCtx;
         if (ssl) {
-            sslCtx = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+            sslCtx = SslContextBuilder
+	            		.forClient()
+	            		.trustManager(InsecureTrustManagerFactory.INSTANCE)
+	            		.build();
         } else {
             sslCtx = null;
         }
@@ -161,7 +162,6 @@ public final class HttpSnoopClient {
              .handler(new HttpSnoopClientInitializer(sslCtx));
 
             System.out.println("group set after ");
-            
             
             System.out.println("Host : " + host);
             cf = b.connect(host, port);
@@ -182,44 +182,38 @@ public final class HttpSnoopClient {
 //                    , Unpooled.EMPTY_BUFFER
                     );
             
-            System.out.println("requset set after");
+            System.out.println("request set after");
             
-            //야... 이걸 주석처리 하니까 웹페이지 모든 소스를 불러와버린다... 개꿀!
-            //위에게 아니라 뭔가 다른걸 불러옴. 헤더셋팅을 안했는데 불러올수있을리가 없지.
             request.headers().set(HttpHeaderNames.HOST, host);
-            
-            System.out.println("requset.header set host after");
+            System.out.println("request.header set host after");
             
             request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-
-            System.out.println("requset.header set connection after");
-            //야 인코딩 안해도 연결은 되는 것 같다.
+            System.out.println("request.header set connection after");
+            
+            //이야 인코딩 안해도 연결은 되는 것 같다.
 //            request.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);
-            //이쪽 컨텐츠 인코딩타입에서 오류남.
+            //이야 이쪽 컨텐츠 인코딩타입에서 오류남.
 //            request.headers().set(HttpHeaderNames.CONTENT_ENCODING, HttpHeaderValues.GZIP);
             
 //            request.headers().set();
             
-            //인코딩 타입은 안맞춰도 오류는 없음.
+            //이야 인코딩 타입은 안맞춰도 오류는 없음.
             request.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.APPLICATION_JSON);
-            
-            System.out.println("requset.header set ACCEPT_ENCODING after");
+            System.out.println("request.header set ACCEPT_ENCODING after");
             
             request.headers().set(HttpHeaderNames.CONTENT_ENCODING, HttpHeaderValues.APPLICATION_JSON);
+            System.out.println("request.header set CONTENT_ENCODING after");
 
-            System.out.println("requset.header set CONTENT_ENCODING after");
+            request.headers().set(HttpHeaderNames.CONTENT_ENCODING, "charset=utf-8");
 
-            //야 쿠키가 안들어가도 된다.
+            //이야 쿠키가 안들어가도 된다.
             // Set some example cookies.
 //            request.headers().set(
 //                    HttpHeaderNames.COOKIE,
 //                    ClientCookieEncoder.STRICT.encode(
 //                            new DefaultCookie("my-cookie", "foo"),
 //                            new DefaultCookie("another-cookie", "bar")));
-
             // Send the HTTP request.
-            
-
             
             System.out.println("channelFuture is Done : "		+ cf.isDone());
             System.out.println("channelFuture is Success : "	+ cf.isSuccess());
@@ -234,6 +228,7 @@ public final class HttpSnoopClient {
             System.out.println("channelFuture is Success : "	+ cf.isSuccess());
             System.out.println("channelFuture is Cancelled : "	+ cf.isCancelled());
             System.out.println("channelFuture is Void : "		+ cf.isVoid());
+            
             // Wait for the server to close the connection.
             ch.closeFuture().sync();
             System.out.println("채널 닫음.");

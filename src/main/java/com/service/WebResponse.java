@@ -18,6 +18,7 @@ import io.netty.channel.ChannelHandlerContext;
 public class WebResponse {
 	
 	private static final Logger logger = LoggerFactory.getLogger(WebResponse.class);
+	
 	private HashMap<ChannelHandlerContext , WebContentTmp> WebContentTmp;  //스케줄러에서 가져가서 pis의 정보를 업데이트할것임
 	
 	public WebResponse() {

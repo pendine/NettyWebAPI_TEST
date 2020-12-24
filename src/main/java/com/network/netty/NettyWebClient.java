@@ -45,7 +45,7 @@ public class NettyWebClient {
 	Bootstrap b;
 	EventLoopGroup group;
 	
-	SslContext sslCtx;
+	SslContext sslCtx = null;
 	
 	String host;
 	int port;
@@ -62,7 +62,6 @@ public class NettyWebClient {
 //		this.nettyBootstrapFactory = nettyBootstrapFactory;
 		this.reconnectTime = reconnectTime;
 		
-		// 2019.04.24 dsnoh
 		try {
 			clientBootstrap = nettyBootstrapFactory.createBootstrap();
 			logger.info("netty Web 클라이언트 nettyBootstrapFactory.createBootstr 생성");
@@ -86,67 +85,83 @@ public class NettyWebClient {
 		this(host, port, nettyBootstrapFactory, 1);
 	}
 	
+	 public void createRequest(String host, String port ) throws Exception
+	 {
+		 createRequest(host, port, 900);
+	 }
 	    
-    public void createRequest(String host, int port, String url) throws Exception 
+    public void createRequest(String host, String portStr, int keepAliveTimeOut ) throws Exception 
     {
     	HttpRequest request = null;
         
-    	String input = url ;
-    	System.out.println("input url : " + input);
-    	URI uri = new URI(input);
+    	System.out.println("input host : " + host);
+    	System.out.println("input port : " + portStr);
+    	
+    	String url = "http://"+host+":"+portStr + "/users/login";
+    	
+    	URI uri = new URI(url);
     	
     	request = new DefaultFullHttpRequest( 
     			HttpVersion.HTTP_1_1
     			, HttpMethod.GET
-    			, uri.toString()
+    			, url
     			);
         
         System.out.println("requset host : " + host );
-        System.out.println("requset port : " + port );
+        System.out.println("requset port : " + portStr );
         System.out.println("set url : " + request.uri());
         
-        String scheme = uri.getScheme() == null? "http" : uri.getScheme();
-        String address = uri.getHost() == null? "127.0.0.1" : uri.getHost();
+//        String scheme = uri.getScheme() == null? "http" : uri.getScheme();
+//        String address = uri.getHost() == null? "127.0.0.1" : uri.getHost();
+                
+        port = uri.getPort();
+        System.out.println("PORT : " + port );
+//        if (port == -1) 
+//        {
+//            if ("http".equalsIgnoreCase(scheme)) 
+//            {
+//                port = 80;
+//            } 
+//            else if ("https".equalsIgnoreCase(scheme)) 
+//            {
+//                port = 443;
+//            }
+//        }
+        System.out.println("PORT : " + port );
         
-        System.out.println("scheme : " + scheme );
-        System.out.println("address : " + address );
-        System.out.println("port : " + uri.getPort() );
+//        System.out.println("scheme : " + scheme );
+//        System.out.println("address : " + address );
         System.out.println("getPath : " + uri.getPath() );
         System.out.println("getQuery : " + uri.getQuery() );
 
         System.out.println("toASCIIString : " + uri.toASCIIString());
         System.out.println("toString : " + uri.toString());
         
-        final boolean ssl = "https".equalsIgnoreCase(scheme);
-
-        if (ssl) {
-            sslCtx = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-        } else {
-            sslCtx = null;
-        }
+//        final boolean ssl = "https".equalsIgnoreCase(scheme);
+//        if (ssl) 
+//        {
+//            sslCtx = SslContextBuilder
+//	            		.forClient()
+//	            		.trustManager(InsecureTrustManagerFactory.INSTANCE)
+//	            		.build();
+//        } 
+//        else 
+//        {
+//            sslCtx = null;
+//        }
 
         group = new NioEventLoopGroup();
         
-        
-        
-//        Channel ch = b.connect(host, port).sync().channel();
-        
         this.cf = b.connect(host, port);
         Channel ch = this.cf.sync().channel();
-            
+    	
         System.out.println("channelFuture is Done : "		+ cf.isDone());
         System.out.println("channelFuture is Success : "	+ cf.isSuccess());
         System.out.println("channelFuture is Cancelled : "	+ cf.isCancelled());
         System.out.println("channelFuture is Void : "		+ cf.isVoid());
-            
-//        postRequestEncoder = new HttpPostRequestEncoder(request, false);
         
-//        postRequestEncoder.addBodyAttribute("url", url);
-        
-//        request = postRequestEncoder.finalizeRequest();
-//        postRequestEncoder.close();
         ch.writeAndFlush(request);
-
+        
     }
     
     public void close() 

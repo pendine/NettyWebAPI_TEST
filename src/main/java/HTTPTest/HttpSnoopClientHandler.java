@@ -2,14 +2,21 @@ package HTTPTest;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import com.domain.Item;
 import com.domain.Response;
 import com.domain.Separate_part;
 import com.domain.WebContentTmp;
 import com.enums.eCategory;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.processor.ClientProcessor;
+import com.processor.WebResponseProcessor;
+import com.protocol.weather.Item;
+import com.protocol.weather.weatherAPIForm;
 import com.service.WebMap;
 import com.util.ApplicationContextProvider;
 import com.util.NettyHelper;
@@ -33,26 +40,23 @@ import com.util.NettyHelper;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.http.LastHttpContent;
-import io.netty.util.CharsetUtil;
 
 public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObject> {
 	static int contentLength = 0;
 //	WebResponse webResponseMap = (WebResponse) ApplicationContextProvider.getApplicationContext().getBean(WebResponse.class);
 //	WebMap webMap = new WebMap();
-	
 //	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean(WebMap.class);
 //	WebMap webMap = (WebMap) ApplicationContextProvider.getApplicationContext().getBean("webMap");
 	
+//	private ThreadPoolTaskExecutor eventTaskExecutor = 
+//			(ThreadPoolTaskExecutor) ApplicationContextProvider.getApplicationContext().getBean("eventTaskExecutor");
+	
+	
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
+    public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws ParseException {
     	
-    	HttpContent content = null;
-    	StringBuilder sb = new StringBuilder();
-    	int contentLength = 0;
+//    	StringBuilder sb = new StringBuilder();
     	System.out.println("HttpSnoopClientHandler | channelRead 동작 =====================================================");
     	System.out.println("HttpSnoopClientHandler | channelRead0 | 채널값 확인용 ");
     	System.out.println("ctx : "+ctx.toString() + " ip : "+ NettyHelper.getRemoteAddress( ctx.channel() ) );
@@ -79,20 +83,22 @@ public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObje
     	int strLen = contentInfo.getContentLength();
     	String info = contentInfo.getSb().toString();
 
-    	System.out.println("WebMap.getWebContentTmpByCTX info : " + contentInfo.getCtx() );
-    	System.out.println("length : " + strLen + " \n info : " + info);
+    	try {
+//    		this.eventTaskExecutor.submit(ApplicationContextProvider.getApplicationContext().getBean(WebResponseProcessor.class, info, ctx));
+    		WebResponseProcessor wrp = new WebResponseProcessor(info, ctx);
+    		wrp.run();
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
     	
+    	
+    	/*
     	try 
     	{
-//    		System.out.println("info : "+ info);
-//    		JSONParser parser = new JSONParser();
-////    		JSONObject jsonObj = new JSONObject(info);
-//    		JSONObject json = (JSONObject) parser.parse(info);
-//    		
+    		System.out.println("info : "+ info);
 //    		System.out.println("json.toJSONString() : " + json.toJSONString());
 //    		System.out.println("json.toString()     : " + json.toString());
-////    		Gson gson = new Gson();
-    		
+//    		Gson gson = new Gson();
 //    		Response response = gson.fromJson(info, Response.class);
     		
     		Separate_part sp = new Separate_part();
@@ -125,50 +131,9 @@ public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObje
     			}
     			
     			if(str.indexOf("category") > -1 ) {
-//    				System.out.println("str : "+str);
-    				contentInfo.getResponse().getBody().getItem().add(new Item(str));
-//    				Item i = new Item(str);
-//    				switch( eCategory.forValue( i.getCategory() )){
-//					case _POP:
-//						System.out.println( eCategory._POP + " : " + i.getFcstValue() );
-//						break;
-//					case _PTY:
-//						System.out.println( eCategory._PTY + " : " + i.getFcstValue() );
-//						break;
-//					case _REH:
-//						System.out.println( eCategory._REH + " : " + i.getFcstValue() );
-//						break;
-//					case _SKY:
-//						System.out.println( eCategory._SKY + " : " + i.getFcstValue() );
-//						break;
-//					case _T3H:
-//						System.out.println( eCategory._T3H + " : " + i.getFcstValue() );
-//						break;
-//					case _TMX:
-//						System.out.println( eCategory._TMX + " : " + i.getFcstValue() );
-//						break;
-//					case _UUU:
-//						System.out.println( eCategory._UUU + " : " + i.getFcstValue() );
-//						break;
-//					case _VEC:
-//						System.out.println( eCategory._VEC + " : " + i.getFcstValue() );
-//						break;
-//					case _VVV:
-//						System.out.println( eCategory._VVV + " : " + i.getFcstValue() );
-//						break;
-//					case _WSD:
-//						System.out.println( eCategory._WSD + " : " + i.getFcstValue() );
-//						break;	
-//    				}
-    			
-    				
-    				
-    				
+    				contentInfo.getResponse().getBody().getItems().add(new Item(str));
     			}
-    			
     		}
-    		
-//    		System.out.println("respons header : " + response.getHeader().getResultcode() );
     		
     	}
     	catch(Exception e) 
@@ -177,7 +142,7 @@ public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObje
     	}
         
     	
-    	for(Item i : contentInfo.getResponse().getBody().getItem() ) {
+    	for(Item i : contentInfo.getResponse().getBody().getItems() ) {
 //    		System.out.println( i.toString() );
     		switch( eCategory.forValue( i.getCategory() )){
 			case _POP:
@@ -213,10 +178,28 @@ public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObje
 			}
     		
     	}
+    	
     	System.out.println();
         System.out.println("HttpSnoopClientHandler | channelRead 동작끝 =====================================================");
+        
+        JSONParser parser = new JSONParser();
+		//오브젝트에 담음
+		Object obj = parser.parse( info );
+		//Json 으로 변경
+		JSONObject jsonObj = (JSONObject) obj;
+	   
+		System.out.println("obj : " + jsonObj);
+		
+		System.out.println("header : " + jsonObj.get("baseDate"));
+		
+		Gson g = new Gson();
+		
+		weatherAPIForm apiForm = new ObjectMapper().readValue(info, weatherAPIForm.class); 
+        
+        */
+    	
+    	
     }
-
     
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -224,10 +207,11 @@ public class HttpSnoopClientHandler extends SimpleChannelInboundHandler<HttpObje
     		WebMap.setWebContentTmpByCTX(ctx);
     		System.out.println("키값( channelHandlerContext.channel().remoteAddress() )으로 찾을수 있는 요소가 없기 때문에 새로 생성");
     	}
-
 		System.out.println("CTX : " + ctx.toString());
 		
-        ctx.fireChannelActive();
+//        ctx.fireChannelActive();
+        
+        super.channelActive(ctx);
     }
     
     @Override

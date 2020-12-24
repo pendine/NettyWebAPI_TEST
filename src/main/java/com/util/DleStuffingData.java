@@ -1,5 +1,6 @@
 package com.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -93,4 +94,66 @@ public class DleStuffingData {
 		r_sNew = Arrays.copyOf(sNew, new_len); // new_len 길이만큼 새로운 동적배열에 복사
 		return r_sNew; // Remove Stuffing한 데이터 리턴
 	}
+	
+	
+	
+	public static byte[] dleStuffing( byte dle, byte start, byte end, byte[] target) {
+		ArrayList<Byte> array = new ArrayList<Byte>();
+		
+		int startPoint = -1;
+		for(int i=0; i<target.length ; i++) 
+		{
+			if( (target[i] == dle) && (target[i+1] == start) )
+			{
+				// 어느지점에서 잘라줄건지가 중요한데 여기서는 start 바이트의 시작 부분 앞까지 잘라버림.
+				System.out.println("dle stuffing 시작부분(i) :" + i);
+				System.out.println("target[i] : " + target[i] + " target[i+1] : " + target[i+1] );
+				startPoint = i;
+				break;
+			}
+		}
+		
+		if(startPoint < 0 || startPoint == target.length-1) 
+		{
+			// 만약에 시작부분이 없거나 뒤에있다면
+			// 예외처리 또는 종료
+			System.out.println("startPoint : " + startPoint );
+		}
+		
+		for(int i=startPoint; i<target.length ; i++) {
+			if( (target[i] == dle) && (target[i+1] == dle) ) 
+			{
+				array.add(target[i]);
+				System.out.println("dle stuffing 요소 제거");
+				i = i + 1;
+				continue;
+			}
+			else
+			{
+				System.out.println("요소 추가");
+				array.add(target[i]);
+			}
+			
+			if( (target[i] == dle) && (target[i+1] == end) ) 
+			{
+				System.out.println("dle stuffing 종료부분(i+1) : " + (i+1));
+				System.out.println("");
+				array.add(target[i+1]);
+				break;
+			}
+		}
+		
+		System.out.println("새로 생성될 바이트 배열 길이 : "+array.size());
+
+		byte[] returnArr = new byte[array.size()];
+		
+		
+		for(int i =0; i<returnArr.length; i++) {
+			returnArr[i] = array.get(i);
+		}
+		
+		array = null;
+		return returnArr;
+	}
+	
 }

@@ -7,13 +7,15 @@ import com.protocol.Message;
 
 public class OPHeader implements Message {
 	
+	//오퍼레이터에서 패킷을 어떻게 보내는지가 중요하기때문에 추후 변경이 이루어질수 있음.
+	
 	private byte[] commonhead = new byte[10];
 	private byte dle; // 0x10 
 	private byte stx; // 0x02
-	private int addr; // -> TB_PRLT_CTLR.TB_PRLT_CTLR
-	private byte opcode; 
 	
-	public static int SIZE = 17;	
+	private byte len;
+	
+	public static int SIZE = 12;	
 
 	@Override
 	public int size() {
@@ -26,11 +28,10 @@ public class OPHeader implements Message {
 		parse(array, order);
 	}
 
-	public OPHeader(byte dle, byte stx, int addr, byte opCode) {
+	public OPHeader(byte dle, byte stx , byte len ) {
 		this.dle = dle;
 		this.stx = stx;
-		this.addr = addr;
-		this.opcode = opCode;
+		this.len = len;
 	}
 		
 	@Override
@@ -41,8 +42,7 @@ public class OPHeader implements Message {
 		buffer.put(this.commonhead);
 		buffer.put(this.dle);		
 		buffer.put(this.stx);
-		buffer.putInt(this.addr);
-		buffer.put(this.opcode);
+		buffer.put(this.len);
 		
 		return buffer.array();
 	}
@@ -51,22 +51,18 @@ public class OPHeader implements Message {
 	public void parse(byte[] array, ByteOrder order) {
 		ByteBuffer buffer = ByteBuffer.wrap(array);		
 		buffer.order(order);
+		
 		buffer.get(this.commonhead);
+		
 		this.dle = buffer.get();
 		this.stx = buffer.get();
-		this.addr = buffer.getInt();		
-		this.opcode = buffer.get();
+		this.len = buffer.get();
 		
-//		buffer.get(this.dle );
-//		buffer.get(this.stx );
-//		buffer.getInt(this.addr );		
-//		buffer.get(this.opcode );
 	}
 
 	public byte getSender() {
 		return this.dle;
 	}
-
 	public void setSender(byte sender) {
 		this.dle = sender;
 	}
@@ -74,30 +70,20 @@ public class OPHeader implements Message {
 	public byte getReceiver() {
 		return this.stx;
 	}
-
 	public void setReceiver(byte receiver) {
 		this.stx = receiver;
 	}
-
-	public byte getOpCode() {
-		return this.opcode;
+	
+	public byte getLen() {
+		return this.len;
 	}
-
-	public void setOpCode(byte opCode) {
-		this.opcode = opCode;
-	}
-
-	public int getAddr() {
-		return this.addr;
-	}
-
-	public void setAddr(int length) {
-		this.addr = length;
+	public void setLen(byte len) {
+		this.len = len;
 	}
 
 	@Override
 	public String toString() {
-		return "OPHeader [sender=" + dle + ", receiver=" + stx + ", opCode=" + opcode + ", length=" + addr + "]";
+		return "OPHeader [sender=" + dle + ", receiver=" + stx + ", length= " + len + " ]";
 	}
 
 	@Override
